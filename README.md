@@ -7,9 +7,9 @@ Expérimentations autour du dataset GuitarSet
 
 ## Contributeurs
 
-Khalil MAHFOUDH
-Paul BARAKE
-Camille COTTIGNIES
-Pierrick CHEBEL
-Kevin LETHUILLIER
-Kelian BAERT
+Khalil MAHFOUDH  
+Paul BARAKE  
+Camille COTTIGNIES  
+Pierrick CHEBEL  
+Kevin LETHUILLIER  
+Kelian BAERT  
