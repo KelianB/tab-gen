@@ -1,2 +1,4 @@
-/raw/annotations/**
-/raw/audio/**
+/raw/annotations/*
+/raw/audio/*
+/processed/*
+!.gitkeep
