@@ -1,5 +1,5 @@
 {
-    "name": "Mnist_LeNet",
+    "name": "GuitarSet_Experiment",
     "n_gpu": 1,
 
     "arch": {
@@ -7,9 +7,9 @@
         "args": {}
     },
     "data_loader": {
-        "type": "MnistDataLoader",
+        "type": "GuitarSetDataLoader",
         "args":{
-            "data_dir": "data/",
+            "data_dir": "data/guitar-set/processed",
             "batch_size": 128,
             "shuffle": true,
             "validation_split": 0.1,
