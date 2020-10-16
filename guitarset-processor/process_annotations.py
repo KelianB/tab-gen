@@ -4,13 +4,10 @@ import math
 import numpy as np
 from collections import namedtuple
 
-ANNOTATIONS_ROOT = "./raw/annotations/"
-SEGMENT_LENGTH = 0.2 # 0.2 seconds
-
-def get_annotation_files(n):
-    files = filter(lambda file: file[-5:] == ".jams", os.listdir(ANNOTATIONS_ROOT))
+def get_annotation_files(n, annotations_dir):
+    files = filter(lambda file: file[-5:] == ".jams", os.listdir(annotations_dir))
     files = list(files)[0:n]
-    return list(map(lambda file: jams.load(os.path.join(ANNOTATIONS_ROOT, file)), files))
+    return list(map(lambda file: jams.load(os.path.join(annotations_dir, file)), files))
 
 def compute_overlap_frequency(jam, segment_length):
     strings = jam.search(namespace="note_midi")
@@ -36,9 +33,9 @@ def compute_overlap_frequency(jam, segment_length):
     return overlapping_segments / total_segments    
 
 
-def get_segmented_outputs(jam):
+def get_segmented_outputs(jam, segment_length):
     strings = jam.search(namespace="note_midi")
-    num_segments = math.ceil(jam.file_metadata.duration / SEGMENT_LENGTH)
+    num_segments = math.ceil(jam.file_metadata.duration / segment_length)
     segments = [[0, 0, 0, 0, 0, 0] for _ in range(num_segments)]
 
     MIDINote = namedtuple("SegmentedNote", ["time", "duration", "value"])
@@ -51,11 +48,11 @@ def get_segmented_outputs(jam):
         # Remarque : une même note peut apparaître plusieurs fois, si elle a une intersection non-nulle avec plusieurs segments
         segment_notes = [[] for _ in range(num_segments)]
         for note in string_notes:
-            start_segment_idx = math.floor(note.time / SEGMENT_LENGTH)
-            end_segment_idx   = math.floor((note.time + note.duration) / SEGMENT_LENGTH)
+            start_segment_idx = math.floor(note.time / segment_length)
+            end_segment_idx   = math.floor((note.time + note.duration) / segment_length)
 
             for j in range(start_segment_idx, end_segment_idx + 1):
-                segment_notes[j].append(MIDINote(time=note.time % SEGMENT_LENGTH, duration=note.duration, value=note.value))
+                segment_notes[j].append(MIDINote(time=note.time % segment_length, duration=note.duration, value=note.value))
 
         num_overlaps += len(list(filter(lambda notes: len(notes) > 1, segment_notes)))
 
@@ -68,16 +65,6 @@ def get_segmented_outputs(jam):
 
     # Conversion des notes en indice pour chaque frettes
     return [to_guitar_chords(segment) for segment in segments]
-
-
-def get_segmented_input(jam):
-    audio_file = jam.file_metadata.title + "_mic.wav"
-    num_segments = math.ceil(jam.file_metadata.duration / SEGMENT_LENGTH)
-
-    # TODO Not implemented
-
-    return [audio_file + " segment #" + str(i) for i in range(num_segments)]
-
 
 def to_guitar_chords(midi_values):
     # Initialize variables
@@ -96,7 +83,10 @@ def to_guitar_chords(midi_values):
         string = np.hstack(([1 if note == 0 else 0], (frets[t] == note) * 1))
         tab[t,:] = string
 
-    return tab
+    # Convert to indices to save space in storage
+    indices = np.where(tab == 1)[1]
+
+    return indices
 
 """
 output = np.copy(frets)
@@ -184,21 +174,3 @@ def visualize_overlap_frequencies(parsed_jams):
     plt.plot(x, y)
     plt.show()
 
-
-if __name__ == "__main__":    
-    print("Parsing annotations...")
-    parsed_jams = get_annotation_files(5)
-    print("done.")
-
-    #visualize_overlap_frequencies(parsed_jams[0:5])
-    #print(to_guitar_chords([0, 51, 58, 0, 0, 70]))
-    
-    data = [[get_segmented_input(jam), get_segmented_outputs(jam)] for jam in parsed_jams[0:1]]
-    data_zipped = [list(zip(inputs, notes)) for inputs, notes in data]
-
-    # Flatten our data (we don't need our segments to be split per audio file)
-    data_flat = [segment_data for file_data in data_zipped for segment_data in file_data]
-    print(data_flat)
-    
-
-    
