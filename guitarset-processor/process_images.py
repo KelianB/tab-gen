@@ -6,6 +6,7 @@ import librosa
 import librosa.display
 
 AUDIO_SAMPLE_RATE = 44100 # Hz
+plt.ioff()
 
 def get_cqt(audio_path, segment_index, segment_length):
     start = segment_index * segment_length
@@ -35,19 +36,23 @@ def plot_cqt(audio_path, segment_index, segment_length):
 
 def save_image(audio_path, output_path, segment_index, segment_length):
     cqt = get_cqt(audio_path, segment_index, segment_length)
+    
+    plt.clf()
     fig, ax = plt.subplots()
-    img = librosa.display.specshow(cqt, sr=AUDIO_SAMPLE_RATE, ax=ax)
+    plt.subplots_adjust(top = 1, bottom = 0, right = 1, left = 0, hspace = 0, wspace = 0)
+    img = librosa.display.specshow(cqt, sr=AUDIO_SAMPLE_RATE, ax=ax, cmap="gray_r")
     plt.savefig(output_path)
 
 def create_segmented_inputs(jam, segment_length, raw_dir, processed_dir):
     audio_file = os.path.join(raw_dir, jam.file_metadata.title + "_mic.wav")
-    output_file = os.path.join(processed_dir, jam.file_metadata.title + ".png")
     num_segments = math.ceil(jam.file_metadata.duration / segment_length)
 
-    #for i in range(num_segments):
-    #   save_image(audio_file, output_file, i)
-    save_image(audio_file, output_file, 0, segment_length)
-
+    for i in range(num_segments):
+        filename = jam.file_metadata.title + "_" + str(i) + ".png"
+        print(filename)
+        output_file = os.path.join(processed_dir, filename)
+        save_image(audio_file, output_file, i, segment_length)
+    
 if __name__ == "__main__":
     # Testing
 

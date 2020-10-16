@@ -19,7 +19,7 @@ class GuitarSetDataset(Dataset):
         self.root_dir = root_dir
         self.transform = transform
         self.csv = pd.read_csv(os.path.join(root_dir, "index.csv"), delimiter=";")
-        
+
     def __len__(self):
         return len(self.csv)
 
@@ -29,16 +29,14 @@ class GuitarSetDataset(Dataset):
 
         # Read image
         img_name = os.path.join(self.root_dir, self.csv.iloc[idx, 0])
-        image = cv2.imread(img_name + ".png")
-
+        image = np.array([cv2.imread(img_name + ".png", cv2.IMREAD_GRAYSCALE)])
+    
         # Parse and one-hot-encode the annotation
         notes = np.fromstring(self.csv.iloc[idx, 1], dtype=np.int8, sep=" ")
-        one_hot_encoded = np.zeros((notes.size, 19)) # 6x19 matrix
-        one_hot_encoded[np.arange(notes.size), notes] = 1
-
-        sample = {'image': image, 'guitar_notes': one_hot_encoded}
+        target = np.zeros((notes.size, 19)) # 6x19 matrix
+        target[np.arange(notes.size), notes] = 1
 
         if self.transform:
-            sample = self.transform(sample)
+            sample = self.transform(image, one_hot_encoded)
 
-        return sample
+        return image, target

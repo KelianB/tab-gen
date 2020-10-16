@@ -33,12 +33,12 @@ if __name__ == "__main__":
     #                                      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
     # ...
 
+    n_files = 3
+
+    # Prepare outputs
     rows = []
-    for jam in parsed_jams[0:1]:
+    for jam in parsed_jams[0:n_files]:
         img_name = jam.file_metadata.title
-        # Prepare input
-        create_segmented_inputs(jam, SEGMENT_LENGTH, RAW_AUDIO_DIR, PROCESSED_DIR)
-        # Prepare output
         segmented_outputs = get_segmented_outputs(jam, SEGMENT_LENGTH)
         for i,segment_output in enumerate(segmented_outputs):
             # print(img_name + "_" + str(i) , segment_output)
@@ -48,4 +48,7 @@ if __name__ == "__main__":
         writer = csv.writer(csvfile, delimiter=";", quotechar="|", quoting=csv.QUOTE_MINIMAL)
         for row in rows:
             writer.writerow(row)
-        
+    
+    # Prepare inputs
+    for jam in parsed_jams[0:n_files]:
+        create_segmented_inputs(jam, SEGMENT_LENGTH, RAW_AUDIO_DIR, PROCESSED_DIR)
