@@ -2,3 +2,5 @@
 /raw/audio/*
 /processed/*
 !.gitkeep
+
+__pycache__
