@@ -9,7 +9,7 @@ def accuracy(output, target):
     return correct / len(target)
 
 def top_k_acc(output, target, k=3):
-    with torch.no_grad():ct_idx = 
+    with torch.no_grad():
         predictions = torch.topk(output, k, dim=2)[1]
         correct_idx = torch.argmax(target, dim=2)
         assert predictions.shape[0] == len(target)
