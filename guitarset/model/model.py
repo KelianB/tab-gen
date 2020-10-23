@@ -40,15 +40,9 @@ class GuitarSetModel(BaseModel):
         ])
 
     def forward(self, x):
-        x = x.float()
         x = self.main_block(x)
-        #x = x.view(x.shape[0], 4*30*40)
-
         outs = [sequential(x) for sequential in self.out_layers]
-
-        z = torch.stack(outs, dim=1)
-
-        return z
+        return torch.stack(outs, dim=1)
 
 """
 
