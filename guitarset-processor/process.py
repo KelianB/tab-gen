@@ -10,30 +10,13 @@ ANNOTATIONS_DIR = "./raw/annotations/"
 PROCESSED_DIR = "./processed/"
 
 if __name__ == "__main__":    
+    n_files = 30
+
     print("Parsing annotations...")
-    parsed_jams = get_annotation_files(5, ANNOTATIONS_DIR)
+    parsed_jams = get_annotation_files(30, ANNOTATIONS_DIR)
     print("done.")
 
     #visualize_overlap_frequencies(parsed_jams[0:5])
-    #print(to_guitar_chords([0, 51, 58, 0, 0, 70]))
-    
-    # Output a CSV file:
-    # img_filename                  answer
-    # 00_BN1-129-Eb_comp_mic_78     array([[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    #                                      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    #                                      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    #                                      [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    #                                      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    #                                      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
-    # 00_BN1-129-Eb_comp_mic_79     array([[0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    #                                      [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    #                                      [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    #                                      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    #                                      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    #                                      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
-    # ...
-
-    n_files = 3
 
     # Prepare outputs
     rows = []
