@@ -6,6 +6,7 @@ import librosa
 import librosa.display
 
 AUDIO_SAMPLE_RATE = 44100 # Hz
+OVERWRITE_IMAGES = False
 plt.ioff()
 
 def get_cqt(audio_path, segment_index, segment_length):
@@ -37,7 +38,7 @@ def plot_cqt(audio_path, segment_index, segment_length):
 def save_image(audio_path, output_path, segment_index, segment_length):
     cqt = get_cqt(audio_path, segment_index, segment_length)
     
-    plt.clf()
+    plt.close("all")
     fig, ax = plt.subplots()
     plt.subplots_adjust(top = 1, bottom = 0, right = 1, left = 0, hspace = 0, wspace = 0)
     img = librosa.display.specshow(cqt, sr=AUDIO_SAMPLE_RATE, ax=ax, cmap="gray_r")
@@ -51,7 +52,9 @@ def create_segmented_inputs(jam, segment_length, raw_dir, processed_dir):
         filename = jam.file_metadata.title + "_" + str(i) + ".png"
         print(filename)
         output_file = os.path.join(processed_dir, filename)
-        save_image(audio_file, output_file, i, segment_length)
+
+        if OVERWRITE_IMAGES or not os.path.isfile(output_file):
+            save_image(audio_file, output_file, i, segment_length)
     
 if __name__ == "__main__":
     # Testing
