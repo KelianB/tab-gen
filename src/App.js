@@ -15,11 +15,34 @@ class FileUploader extends React.Component {
 
   onChangeHandler = event => {
     console.log(event.target.files[0]);
-    this.setState({
-      selectedFile: event.target.files[0],
-      loaded: 0,
-    })
+    if (this.checkMimeType(event)) {
+      this.setState({
+        selectedFile: event.target.files[0],
+        loaded: 0,
+      })
+    }
+
   }
+
+  checkMimeType = event => {
+    let file = event.target.files[0]
+    let err = '' // Error message container
+
+    const types = ['audio/mp3', 'audio/wav', 'audio/mpeg', 'audio/x-wav']
+
+    if (types.every(type => file.type !== type)) {
+      err += file.type + ' is not a supported format \n'
+    }
+
+    if (err !== '') { // if there are erros
+      event.target.value = null; // discard selected file
+      console.log(err)
+      return false
+    }
+    return true;
+  }
+
+
 
 
   onClickHandler = () => {
