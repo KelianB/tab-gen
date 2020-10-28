@@ -4,6 +4,7 @@ import React from 'react';
 import axios from 'axios';
 
 const URL = "http://localhost:8000/upload";
+const MAX_SIZE = 4 * (10 ** 6); // Max size in bytes (?)
 
 class FileUploader extends React.Component {
   constructor(props) {
@@ -13,9 +14,10 @@ class FileUploader extends React.Component {
     }
   }
 
+
   onChangeHandler = event => {
     console.log(event.target.files[0]);
-    if (this.checkMimeType(event)) {
+    if (this.checkMimeType(event) && this.checkFileSize(event)) {
       this.setState({
         selectedFile: event.target.files[0],
         loaded: 0,
@@ -40,6 +42,25 @@ class FileUploader extends React.Component {
       return false
     }
     return true;
+  }
+
+  checkFileSize = event => {
+    let file = event.target.files[0]
+    let size = MAX_SIZE;
+    let err = "";
+
+    if (file.size > size) {
+      err += file.name + " is too large. Uploaded files must be smaller than " + size / (10 ** 6) + " MB"
+    }
+
+    if (err !== '') {
+      event.target.value = null
+      console.log(err)
+      return false
+    }
+
+    return true
+
   }
 
 
