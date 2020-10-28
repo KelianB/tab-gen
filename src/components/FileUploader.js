@@ -16,7 +16,6 @@ class FileUploader extends React.Component {
         }
     }
 
-
     onChangeHandler = event => {
         console.log(event.target.files[0]);
         if (this.checkMimeType(event) && this.checkFileSize(event)) {
@@ -93,19 +92,27 @@ class FileUploader extends React.Component {
     render() {
 
         return (
-            <div>
-                <input type="file" name="file" onChange={this.onChangeHandler} />
-                <Button color="primary" onClick={this.onClickHandler}>Upload</Button>{''}
-                <div class="form-group">
-                    <Progress max="100" color="success" value={this.state.loaded} >{Math.round(this.state.loaded, 2)}%</Progress>
-                </div>
+            <div class="container">
+                <div class="row">
+                    <div class="offset-md-3 col-md-6">
 
-                <div class="form-group">
-                    <ToastContainer />
+                        <div class="form-group files">
+                            <label> Upload your file </label>
+                            <input type="file" name="file" onChange={this.onChangeHandler} />
+                        </div>
+
+                        <div class="form-group">
+                            <ToastContainer />
+                            <Progress max="100" color="success" value={this.state.loaded} >{Math.round(this.state.loaded, 2)}%</Progress>
+                        </div>
+
+                        <Button color="primary" onClick={this.onClickHandler}>Upload</Button>{''}
+
+
+                    </div>
                 </div>
             </div>
         )
-
     }
 }
 
