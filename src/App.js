@@ -1,10 +1,11 @@
-import logo from './logo.svg';
-import './App.css';
+//import './App.css';
 import React from 'react';
 import axios from 'axios';
-import { Progress } from 'reactstrap';
+import { Progress, Button } from 'reactstrap';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import 'bootstrap/dist/css/bootstrap.css';
+
 
 const URL = "http://localhost:8000/upload";
 const MAX_SIZE = 4 * (10 ** 6); // Max size in bytes (?)
@@ -68,7 +69,6 @@ class FileUploader extends React.Component {
 
   }
 
-
   onClickHandler = () => {
     const data = new FormData();
     data.append('file', this.state.selectedFile)
@@ -92,13 +92,12 @@ class FileUploader extends React.Component {
 
   }
 
-
   render() {
 
     return (
       <div>
         <input type="file" name="file" onChange={this.onChangeHandler} />
-        <button type="button" class="btn btn-success btn-block" onClick={this.onClickHandler}>Upload</button>
+        <Button color="primary" onClick={this.onClickHandler}>Upload</Button>{''}
         <div class="form-group">
           <Progress max="100" color="success" value={this.state.loaded} >{Math.round(this.state.loaded, 2)}%</Progress>
         </div>
@@ -120,10 +119,8 @@ class App extends React.Component {
 
     return (
 
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-
+      <div>
+        <header>
           <FileUploader />
 
         </header>
