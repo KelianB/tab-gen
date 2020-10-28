@@ -2,6 +2,9 @@ import logo from './logo.svg';
 import './App.css';
 import React from 'react';
 import axios from 'axios';
+import { Progress } from 'reactstrap';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const URL = "http://localhost:8000/upload";
 const MAX_SIZE = 4 * (10 ** 6); // Max size in bytes (?)
@@ -39,9 +42,10 @@ class FileUploader extends React.Component {
     if (err !== '') { // if there are erros
       event.target.value = null; // discard selected file
       console.log(err)
+      toast.error(err)
       return false
     }
-    return true;
+    return true
   }
 
   checkFileSize = event => {
@@ -55,6 +59,7 @@ class FileUploader extends React.Component {
 
     if (err !== '') {
       event.target.value = null
+      toast.error(err)
       console.log(err)
       return false
     }
@@ -64,15 +69,27 @@ class FileUploader extends React.Component {
   }
 
 
-
-
   onClickHandler = () => {
     const data = new FormData();
     data.append('file', this.state.selectedFile)
 
-    axios.post(URL, data, {}).then(res => {
-      console.log(res.statusText)
+    axios.post(URL, data, {
+
+      onUploadProgress: ProgressEvent => {
+        this.setState({ loaded: (ProgressEvent.loaded / ProgressEvent.total * 100), })
+      }
+
+    }).then(res => {
+      toast.success('upload success')
+      console.log("Upload Status : " + res.statusText)
+    }).catch(err => {
+      toast.error('upload fail')
+      console.log("Upload Error : " + err.statusText)
     })
+
+
+
+
   }
 
 
@@ -82,6 +99,13 @@ class FileUploader extends React.Component {
       <div>
         <input type="file" name="file" onChange={this.onChangeHandler} />
         <button type="button" class="btn btn-success btn-block" onClick={this.onClickHandler}>Upload</button>
+        <div class="form-group">
+          <Progress max="100" color="success" value={this.state.loaded} >{Math.round(this.state.loaded, 2)}%</Progress>
+        </div>
+
+        <div class="form-group">
+          <ToastContainer />
+        </div>
       </div>
     )
 
@@ -89,10 +113,6 @@ class FileUploader extends React.Component {
 }
 
 class App extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
 
   render() {
 
