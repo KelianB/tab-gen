@@ -5,11 +5,15 @@ import numpy as np
 # def nll_loss(output, target):
     # return F.nll_loss(output, target)
 
+# Very small value added to the outputs to avoid log(0)
+eps = 1e-15
+
 def multi_cross_entropy_loss(output, target):
-    loss = (target * torch.log(output)).sum(2) # sum for all frets
+    loss = (target * torch.log(output + eps)).sum(2) # sum for all frets
     loss = loss.sum(1) # for all strings
     loss = -loss.mean() # for the entire batch
     return loss
+
 
 """
 m = 1e-1
