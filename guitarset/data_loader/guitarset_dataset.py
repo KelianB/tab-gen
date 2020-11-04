@@ -29,14 +29,19 @@ class GuitarSetDataset(Dataset):
 
         # Read image
         img_name = os.path.join(self.root_dir, self.csv.iloc[idx, 0])
-        image = np.array([cv2.imread(img_name + ".png", cv2.IMREAD_GRAYSCALE)])
-    
+        img_cv2 = cv2.imread(img_name + ".png", cv2.IMREAD_GRAYSCALE)
+
+        # Resize & convert
+        img_cv2 = cv2.resize(img_cv2, (160, 120), interpolation=cv2.INTER_CUBIC)
+        image = torch.from_numpy(np.array([img_cv2])).float()
+         
         # Parse and one-hot-encode the annotation
-        notes = np.fromstring(self.csv.iloc[idx, 1], dtype=np.int8, sep=" ")
+        notes = np.fromstring(self.csv.iloc[idx, 1], dtype=np.int64, sep=" ")
         target = np.zeros((notes.size, 19)) # 6x19 matrix
         target[np.arange(notes.size), notes] = 1
+        #target = notes
 
-        if self.transform:
-            sample = self.transform(image, one_hot_encoded)
+        #if self.transform:
+            #sample = self.transform(image, one_hot_encoded)
 
         return image, target

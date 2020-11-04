@@ -41,7 +41,8 @@ def get_segmented_outputs(jam, segment_length):
     MIDINote = namedtuple("SegmentedNote", ["time", "duration", "value"])
 
     num_overlaps = 0
-    
+     
+    # Pour chaque corde
     for i, string_notes in enumerate(strings):
         # On commence par regrouper les notes par segments de 0.2s
         # Par exemple : [[{time: 0.04s, duration, value}, {time: 0.04s, duration, value}, {time: 0.04s, duration, value}], ...]
