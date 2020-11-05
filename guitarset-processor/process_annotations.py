@@ -4,26 +4,67 @@ import math
 import numpy as np
 from collections import namedtuple
 
+# Initialize the matrix used to convert midi values to guitar chords
+frets = np.zeros((6, 18), dtype=np.int32)
+for q in range(0, 6):
+    qs = [40, 45, 50, 55, 59, 64]
+    for f in range(0, 18):
+        frets[q, f] = qs[q] + f
+
+
 def get_annotation_files(n, annotations_dir):
+    """
+        Get n parsed annotation files (.jams) from a given directory.
+        
+        Parameters:
+            n                (int): the number of files fo parse.
+            annotations_dir  (int): the directory to pull from.
+        
+        Returns: list(parsed jams)
+            a list of parsed jams files.
+    """
+
+    # Get the files in the directory and filter for .jams
     files = filter(lambda file: file[-5:] == ".jams", os.listdir(annotations_dir))
+    
+    # Keep the first n files
     files = list(files)[0:n]
+    
+    # Load the files using the jams library
     return list(map(lambda file: jams.load(os.path.join(annotations_dir, file)), files))
 
+
 def compute_overlap_frequency(jam, segment_length):
+    """
+        Compute the percentage of overlapping segments for a given annotation file with a given segment length.
+        Two segments overlap if a note spans over both of them.
+        
+        Parameters:
+            jam                   : a parsed .jams file (see get_annotation_files).
+            segment_length (float): the segmentation interval.
+        
+        Returns: float
+            the frequency (in the [0,1] range) of overlapping segments.
+    """
+
     strings = jam.search(namespace="note_midi")
 
     total_segments = 0
     overlapping_segments = 0
 
+    # For each guitar string
     for string_notes in strings:
         segment_notes = []
+        # For each note
         for note in string_notes:
             start_segment_idx = math.floor(note.time / segment_length)
             end_segment_idx   = math.floor((note.time + note.duration) / segment_length)
             
+            # Ensure the segment_notes list is large enough
             while end_segment_idx > len(segment_notes) - 1:
                 segment_notes.append(0)
 
+            # Increment the note counter for each segment this note overlaps
             for j in range(start_segment_idx, end_segment_idx + 1):
                 segment_notes[j] += 1
 
@@ -33,7 +74,44 @@ def compute_overlap_frequency(jam, segment_length):
     return overlapping_segments / total_segments    
 
 
+def visualize_overlap_frequencies(parsed_jams):
+    """
+        Visualize the average percentage of overlapping segments for the given annotation files, for a range of segment lengths.
+        
+        Parameters:
+            parsed_jams: a list of parsed .jams files (see get_annotation_files).
+    """
+
+    import matplotlib.pyplot as plt
+
+    # Function that computes the average overlap frequency for a given segment_length
+    f = lambda seg_len: sum(compute_overlap_frequency(jam, seg_len) for jam in parsed_jams) / len(parsed_jams)
+
+    # Set x values (segment lengths) and calculate corresponding averages 
+    x = np.linspace(0.01, 0.2, num=20)
+    y = np.vectorize(f)(x)
+
+    # Plot the results
+    plt.title("Note overlap (averaged over %d recordings)" % len(parsed_jams))
+    plt.xlabel("Segment length (seconds)")
+    plt.ylabel("% segments with more than 1 note")
+    plt.plot(x, y)
+    plt.show()
+
+
 def get_segmented_outputs(jam, segment_length):
+    """
+        Compute the guitar chords for all segments of a given annotation file with a given segment length.
+        
+        Parameters:
+            jam                   : a parsed .jams file (see get_annotation_files).
+            segment_length (float): the segmentation interval.
+        
+        Returns: list(list(int))
+            a list of values for each fixed-duration segment.
+            each segment is associated with 6 values corresponding to the note that is played on each string (0 means none).
+    """
+
     strings = jam.search(namespace="note_midi")
     num_segments = math.ceil(jam.file_metadata.duration / segment_length)
     segments = [[0, 0, 0, 0, 0, 0] for _ in range(num_segments)]
@@ -42,11 +120,11 @@ def get_segmented_outputs(jam, segment_length):
 
     num_overlaps = 0
      
-    # Pour chaque corde
+    # For each guitar string
     for i, string_notes in enumerate(strings):
-        # On commence par regrouper les notes par segments de 0.2s
-        # Par exemple : [[{time: 0.04s, duration, value}, {time: 0.04s, duration, value}, {time: 0.04s, duration, value}], ...]
-        # Remarque : une même note peut apparaître plusieurs fois, si elle a une intersection non-nulle avec plusieurs segments
+        # First, sort the notes in 0.2s segments.
+        # For example: [[{time: 0.04s, duration, value}, {time: 0.12s, duration, value}], [{time: 0.04s, duration, value}], ...]
+        # The same note can appear multiple times, in the case where it intersects with several segments.
         segment_notes = [[] for _ in range(num_segments)]
         for note in string_notes:
             start_segment_idx = math.floor(note.time / segment_length)
@@ -55,123 +133,43 @@ def get_segmented_outputs(jam, segment_length):
             for j in range(start_segment_idx, end_segment_idx + 1):
                 segment_notes[j].append(MIDINote(time=note.time % segment_length, duration=note.duration, value=note.value))
 
-        num_overlaps += len(list(filter(lambda notes: len(notes) > 1, segment_notes)))
+        # num_overlaps += len(list(filter(lambda notes: len(notes) > 1, segment_notes)))
 
-        # On passe ensuite de n notes par segment à 1 note par segment
+        # We then need to go from n notes per segment to 0 or 1 note per segment
+        # Strategy: always keep the last note
         for j, notes in enumerate(segment_notes):
             if len(notes) > 0:
                 segments[j][i] = round(notes[-1].value)
         
-    print("Overlapping segments:", num_overlaps, "/", (6*num_segments), "(" + ("%.2f" % (100 * num_overlaps / (6*num_segments))) + "%)")
+    # print("Overlapping segments:", num_overlaps, "/", (6*num_segments), "(" + ("%.2f" % (100 * num_overlaps / (6*num_segments))) + "%)")
 
-    # Conversion des notes en indice pour chaque frettes
+    # Remove the last segment, which is likely to have incomplete audio data
+    segments = segments[:-2] 
+
+    # Finally, the notes (midi values) are converted to guitar chords 
     return [to_guitar_chords(segment) for segment in segments]
 
+
 def to_guitar_chords(midi_values):
-    # Initialize variables
-    frets = np.zeros((6, 18), dtype=np.int32)
-    
-    # Retrieve all possible notes played
-    for q in range(0, 6):
-        qs = [40, 45, 50, 55, 59, 64]
-        for f in range(0, 18):
-            frets[q, f] = qs[q] + f
+    """
+        Compute the guitar chords associated with midi values.
+        
+        Parameters:
+            midi_values (list(float)): a list of 6 MIDI values, one for each guitar string.
+        
+        Returns: list(int)
+            a list of frets to press on each string of a guitar (0 means no note is played, 1 means open string)
+    """
 
     tab = np.zeros((6, 19), dtype=np.int32)
-    for t in range(0, len(midi_values)):
-        note = int(midi_values[t])
+    for s, midi in enumerate(midi_values):
+        match = (frets[s] == int(midi)) * 1
         # Add a column at the beginning to indicate if no note is being played
-        string = np.hstack(([1 if note == 0 else 0], (frets[t] == note) * 1))
-        tab[t,:] = string
+        string = np.hstack(([0 if np.any(match) else 1], match))
+        tab[s,:] = string
 
     # Convert to indices to save space in storage
     indices = np.where(tab == 1)[1]
 
     return indices
-
-"""
-output = np.copy(frets)
-f_row = np.full((6, 6), np.inf)  # 6 strings with 1 note per string
-f_col = np.full((6, 6), np.inf)
-
-<code>
-
-fcnt2 = 0
-
-for t in range(0, len(midi_values)):
-    fret_played = (frets == int(midi_values[t])) * 1
-
-    cng = 0
-    for dr in range(0, len(frets[:, 0])):
-        for dc in range(0, len(frets[0, :])):
-            if fret_played[dr, dc] == 1:
-                if cng == 0:
-                    fcnt2 = 0
-                    cng += 1
-                f_row[t, fcnt2] = dr
-                f_col[t, fcnt2] = dc
-                fcnt2 += 1
-
-    print(fret_played)
-print(f_row)
-print(f_col)
-
-# Initialize the 6 possible note solutions (one note per string)
-f_sols = [np.copy(f_col) for _ in range(6)]
-
-pri_cnt_c, = np.where(np.isfinite(f_col[0, :]))
-pri_cnt_r, = np.where(np.isfinite(f_col[:, 0]))
-print(pri_cnt_c)
-print(pri_cnt_r)
-for pri in range(0, len(pri_cnt_c)):
-    for sub_r in range(1, 6):
-        for sub_c in range(0, len(f_sols[0][0, :])):
-            f_sols[pri][sub_r, sub_c] = abs(f_col[0, pri] - f_col[sub_r, sub_c])
-
-if len(pri_cnt_r) == 0 or len(pri_cnt_c) == 0:
-    true_tab = np.copy(np.zeros((6, 18), dtype=np.int32))
-    print("tab", true_tab)
-else:
-    ck_sols = [np.zeros((len(pri_cnt_r) - 1, len(pri_cnt_c) - 1), dtype = np.int32) for _ in range(6)]
-    sol_inds = [np.copy(ck_sols[0]) for _ in range(6)]
-
-    # Replace infinite values with high finite values for each solution
-    for ck_sol in range(6):
-        for pri_sol_r in range(1, len(pri_cnt_r)):
-            for pri_sol_c in range(0, len(pri_cnt_c) - 1):  # Random - 1
-                infinites = np.isinf(f_sols[ck_sol][pri_sol_r, :]) 
-                if np.any(infinites):
-                    f_sols[ck_sol][pri_sol_r, np.argwhere(infinites)] = 999
-
-                if ck_sol > 0:
-                    ck_sols[ck_sol][0, pri_sol_c] = min(f_sols[ck_sol][pri_sol_r, :])
-
-    # Determine "rating" for each solution
-    tab_sols = [np.argmin(f_sols[i], axis = 1) for i in range(6)]
-    min_sols = [np.min(f_sols[i], axis = 1) for i in range(6)]
-
-    for i in range(6):
-        inf = np.isinf(min_sols[i][:])
-        if np.any(inf):
-            min_sols[np.argwhere(inf)] = 0
-
-    sols = [np.sum(min_sols[i][:]) for i in range(6)]
-
-    print("sols:")
-    print(sols)
-"""
-
-def visualize_overlap_frequencies(parsed_jams):
-    import matplotlib.pyplot as plt
-
-    # Average over the given jams
-    f = lambda seg_len: sum(compute_overlap_frequency(jam, seg_len) for jam in parsed_jams) / len(parsed_jams)
-
-    x = np.linspace(0.01, 0.2, num=20)
-    y = np.vectorize(f)(x)
-    plt.title("Note overlap (averaged over %d recordings)" % len(parsed_jams))
-    plt.xlabel("Segment length (seconds)")
-    plt.ylabel("% segments with more than 1 note")
-    plt.plot(x, y)
-    plt.show()
 
