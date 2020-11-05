@@ -42,8 +42,9 @@ class BaseTrainer:
 
         self.checkpoint_dir = config.save_dir
 
-        # setup visualization writer instance                
-        self.writer = TensorboardWriter(config.log_dir, self.logger, cfg_trainer['tensorboard'])
+        # setup visualization writer instances                
+        self.writer_train = TensorboardWriter(config.log_dir_train, self.logger, cfg_trainer['tensorboard'])
+        self.writer_val =   TensorboardWriter(config.log_dir_val, self.logger, cfg_trainer['tensorboard'])
 
         if config.resume is not None:
             self._resume_checkpoint(config.resume)

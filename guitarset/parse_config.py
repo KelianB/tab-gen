@@ -29,18 +29,21 @@ class ConfigParser:
         if run_id is None: # use timestamp as default run-id
             run_id = datetime.now().strftime(r'%m%d_%H%M%S')
         self._save_dir = save_dir / 'models' / exper_name / run_id
-        self._log_dir = save_dir / 'log' / exper_name / run_id
+        self._log_dir_train = save_dir / 'log' / exper_name / (run_id + "_train")
+        self._log_dir_val = save_dir / 'log' / exper_name / (run_id + "_val")
 
         # make directory for saving checkpoints and log.
         exist_ok = run_id == ''
         self.save_dir.mkdir(parents=True, exist_ok=exist_ok)
-        self.log_dir.mkdir(parents=True, exist_ok=exist_ok)
+        self.log_dir_train.mkdir(parents=True, exist_ok=exist_ok)
+        self.log_dir_val.mkdir(parents=True, exist_ok=exist_ok)
 
         # save updated config file to the checkpoint dir
         write_json(self.config, self.save_dir / 'config.json')
 
         # configure logging module
-        setup_logging(self.log_dir)
+        setup_logging(self.log_dir_train)
+        setup_logging(self.log_dir_val)
         self.log_levels = {
             0: logging.WARNING,
             1: logging.INFO,
@@ -128,8 +131,12 @@ class ConfigParser:
         return self._save_dir
 
     @property
-    def log_dir(self):
-        return self._log_dir
+    def log_dir_train(self):
+        return self._log_dir_train
+    
+    @property
+    def log_dir_val(self):
+        return self._log_dir_val
 
 # helper functions to update config dict with custom cli options
 def _update_config(config, modification):

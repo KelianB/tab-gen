@@ -26,8 +26,8 @@ class Trainer(BaseTrainer):
         self.lr_scheduler = lr_scheduler
         self.log_step = int(np.sqrt(data_loader.batch_size))
 
-        self.train_metrics = MetricTracker('loss', *[m.__name__ for m in self.metric_ftns], writer=self.writer)
-        self.valid_metrics = MetricTracker('loss', *[m.__name__ for m in self.metric_ftns], writer=self.writer)
+        self.train_metrics = MetricTracker('lr', 'loss', *[m.__name__ for m in self.metric_ftns], writer=self.writer_train)
+        self.valid_metrics = MetricTracker('lr', 'loss', *[m.__name__ for m in self.metric_ftns], writer=self.writer_val)
 
     def _train_epoch(self, epoch):
         """
@@ -47,8 +47,10 @@ class Trainer(BaseTrainer):
             loss.backward()
             self.optimizer.step()
 
-            self.writer.set_step((epoch - 1) * self.len_epoch + batch_idx)
+            self.writer_train.set_step((epoch - 1) * self.len_epoch + batch_idx)
             self.train_metrics.update('loss', loss.item())
+            if self.lr_scheduler is not None:
+                self.train_metrics.update('lr', self.lr_scheduler.get_last_lr()[0])
             for met in self.metric_ftns:
                 self.train_metrics.update(met.__name__, met(output, target))
 
@@ -57,7 +59,7 @@ class Trainer(BaseTrainer):
                     epoch,
                     self._progress(batch_idx),
                     loss.item()))
-                self.writer.add_image('input', make_grid(data.cpu(), nrow=8, normalize=True))
+                self.writer_train.add_image('input', make_grid(data.cpu(), nrow=8, normalize=True))
 
             if batch_idx == self.len_epoch:
                 break
@@ -81,21 +83,36 @@ class Trainer(BaseTrainer):
         self.model.eval()
         self.valid_metrics.reset()
         with torch.no_grad():
+            metric_sums = dict()
+            metric_sums["loss"] = 0
+            for met in self.metric_ftns:
+                metric_sums[met.__name__] = 0
+
             for batch_idx, (data, target) in enumerate(self.valid_data_loader):
                 data, target = data.to(self.device), target.to(self.device)
 
                 output = self.model(data)
                 loss = self.criterion(output, target)
 
-                self.writer.set_step((epoch - 1) * len(self.valid_data_loader) + batch_idx, 'valid')
-                self.valid_metrics.update('loss', loss.item())
+                #self.writer_val.set_step((epoch - 1) * len(self.valid_data_loader) + batch_idx, 'valid')
+                metric_sums["loss"] += loss.item()
                 for met in self.metric_ftns:
-                    self.valid_metrics.update(met.__name__, met(output, target))
-                self.writer.add_image('input', make_grid(data.cpu(), nrow=8, normalize=True))
+                    metric_sums[met.__name__] += met(output, target)
+                # self.writer_val.add_image('input', make_grid(data.cpu(), nrow=8, normalize=True))
 
+            self.writer_val.set_step((epoch - 1) * self.len_epoch, 'valid')
+            # Average the metrics over the validation batches
+            for key in metric_sums:
+                self.valid_metrics.update(key, metric_sums[key] / len(self.valid_data_loader))
+
+        if self.lr_scheduler is not None:
+            self.valid_metrics.update('lr', self.lr_scheduler.get_last_lr()[0])
+
+        # DISABLED: causes very large allocations that crash everything
         # add histogram of model parameters to the tensorboard
-        for name, p in self.model.named_parameters():
-            self.writer.add_histogram(name, p, bins='auto')
+        #for name, p in self.model.named_parameters():
+            #self.writer_val.add_histogram(name, p, bins='auto')
+          
         return self.valid_metrics.result()
 
     def _progress(self, batch_idx):
