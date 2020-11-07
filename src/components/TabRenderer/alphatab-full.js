@@ -85,16 +85,18 @@ class TrackItem extends React.Component {
           <button
             type="button"
             onClick={this.toggleMute.bind(this)}
-            className={`btn btn-sm btn-outline-danger at-track-mute ${isMute ? "active" : ""
-              }`}
+            className={`btn btn-sm btn-outline-danger at-track-mute ${
+              isMute ? "active" : ""
+            }`}
           >
             Mute
           </button>
           <button
             type="button"
             onClick={this.toggleSolo.bind(this)}
-            className={`btn btn-sm btn-outline-success at-track-solo ${isSolo ? "active" : ""
-              }`}
+            className={`btn btn-sm btn-outline-success at-track-solo ${
+              isSolo ? "active" : ""
+            }`}
           >
             Solo
           </button>
@@ -152,63 +154,63 @@ class PlaybackSpeedSlider extends React.Component {
         <div className="dropdown-menu at-speed-options">
           <a
             className="dropdown-item"
-            href="#"
+            href="/#"
             onClick={this.setSpeed.bind(this)}
           >
             0.25x
           </a>
           <a
             className="dropdown-item"
-            href="#"
+            href="/#"
             onClick={this.setSpeed.bind(this)}
           >
             0.5x
           </a>
           <a
             className="dropdown-item"
-            href="#"
+            href="/#"
             onClick={this.setSpeed.bind(this)}
           >
             0.75x
           </a>
           <a
             className="dropdown-item"
-            href="#"
+            href="/#"
             onClick={this.setSpeed.bind(this)}
           >
             0.9x
           </a>
           <a
             className="dropdown-item"
-            href="#"
+            href="/#"
             onClick={this.setSpeed.bind(this)}
           >
             1x
           </a>
           <a
             className="dropdown-item"
-            href="#"
+            href="/#"
             onClick={this.setSpeed.bind(this)}
           >
             1.1x
           </a>
           <a
             className="dropdown-item"
-            href="#"
+            href="/#"
             onClick={this.setSpeed.bind(this)}
           >
             1.25x
           </a>
           <a
             className="dropdown-item"
-            href="#"
+            href="/#"
             onClick={this.setSpeed.bind(this)}
           >
             1.50x
           </a>
           <a
             className="dropdown-item"
-            href="#"
+            href="/#"
             onClick={this.setSpeed.bind(this)}
           >
             2x
@@ -252,7 +254,7 @@ class LayoutSelector extends React.Component {
         <div className="dropdown-menu dropdown-menu-right at-layout-options">
           <a
             className="dropdown-item"
-            href="#"
+            href="/#"
             onClick={this.selectLayout.bind(this, 1, 2)}
           >
             <i className="far fa-caret-square-right"></i> Horizontal Layout
@@ -260,7 +262,7 @@ class LayoutSelector extends React.Component {
           </a>
           <a
             className="dropdown-item"
-            href="#"
+            href="/#"
             onClick={this.selectLayout.bind(this, 1, 1)}
           >
             <i className="fas fa-caret-square-right"></i> Horizontal Layout (Bar
@@ -268,7 +270,7 @@ class LayoutSelector extends React.Component {
           </a>
           <a
             className="dropdown-item"
-            href="#"
+            href="/#"
             onClick={this.selectLayout.bind(this, 0, 1)}
           >
             <i className="fas fa-caret-square-down"></i> Vertical Layout
@@ -320,63 +322,63 @@ class ZoomLevelSelector extends React.Component {
         <div className="dropdown-menu dropdown-menu-right at-zoom-options">
           <a
             className="dropdown-item"
-            href="#"
+            href="/#"
             onClick={this.setZoom.bind(this)}
           >
             25%
           </a>
           <a
             className="dropdown-item"
-            href="#"
+            href="/#"
             onClick={this.setZoom.bind(this)}
           >
             50%
           </a>
           <a
             className="dropdown-item"
-            href="#"
+            href="/#"
             onClick={this.setZoom.bind(this)}
           >
             75%
           </a>
           <a
             className="dropdown-item"
-            href="#"
+            href="/#"
             onClick={this.setZoom.bind(this)}
           >
             90%
           </a>
           <a
             className="dropdown-item"
-            href="#"
+            href="/#"
             onClick={this.setZoom.bind(this)}
           >
             100%
           </a>
           <a
             className="dropdown-item"
-            href="#"
+            href="/#"
             onClick={this.setZoom.bind(this)}
           >
             110%
           </a>
           <a
             className="dropdown-item"
-            href="#"
+            href="/#"
             onClick={this.setZoom.bind(this)}
           >
             125%
           </a>
           <a
             className="dropdown-item"
-            href="#"
+            href="/#"
             onClick={this.setZoom.bind(this)}
           >
             150%
           </a>
           <a
             className="dropdown-item"
-            href="#"
+            href="/#"
             onClick={this.setZoom.bind(this)}
           >
             200%
@@ -534,7 +536,7 @@ class PlayerControlsGroup extends React.Component {
         <div className="at-player">
           <div className="at-player-left">
             <a
-              href="#"
+              href="/#"
               onClick={this.stop.bind(this)}
               className={
                 "at-stop" +
@@ -547,7 +549,7 @@ class PlayerControlsGroup extends React.Component {
               <i className="fas fa-step-backward"></i>
             </a>
             <a
-              href="#"
+              href="/#"
               onClick={this.playPause.bind(this)}
               className={
                 "at-play-pause" +
@@ -582,7 +584,7 @@ class PlayerControlsGroup extends React.Component {
 
           <div className="at-player-right">
             <a
-              href="#"
+              href="/#"
               onClick={this.toggleMetronome.bind(this)}
               className={
                 "at-metronome" +
@@ -596,7 +598,7 @@ class PlayerControlsGroup extends React.Component {
               <i className="fas fa-edit"></i>
             </a>
             <a
-              href="#"
+              href="/#"
               onClick={this.toggleLoop.bind(this)}
               className={
                 "at-loop" +
@@ -610,7 +612,7 @@ class PlayerControlsGroup extends React.Component {
               <i className="fas fa-retweet"></i>
             </a>
             <a
-              href="#"
+              href="/#"
               onClick={this.print.bind(this)}
               className={
                 "at-print" +
@@ -635,7 +637,7 @@ class PlayerControlsGroup extends React.Component {
   }
 }
 
-class AlphaTab extends React.Component {
+export default class AlphaTab extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -657,8 +659,11 @@ class AlphaTab extends React.Component {
     this._currentTempo = 0;
   }
   componentDidMount() {
+    
+    console.log("VERSION : " + React.version)
     this.state.settings.player.scrollElement = this.refs.viewPort;
     this.setupEvents();
+    debugger;
 
     console.log(this.state.settings);
 
@@ -690,7 +695,10 @@ class AlphaTab extends React.Component {
     const at = this.refs.alphaTab;
     const playerControls = this.refs.playerControls;
 
+    console.log("SETUP EVENT ALPHA TAB" + at)
+
     at.addEventListener("alphaTab.scoreLoaded", (e) => {
+      console.log("SCORE LOADED")
       this.setState({
         score: e.detail,
       });
@@ -705,21 +713,12 @@ class AlphaTab extends React.Component {
     at.addEventListener("alphaTab.playerStateChanged", (e) => {
       const args = e.detail;
       playerControls.setState({
-        isPlaying: args.state == 1,
+        isPlaying: args.state === 1,
       });
     });
 
-    at.addEventListener("alphaTab.resize", (e) => {
-      if (e.detail.newWidth > 750) {
-        e.detail.settings.display.scale = 1;
-        e.detail.settings.display.layoutMode = alphaTab.LayoutMode.Page;
-      } else {
-        e.detail.settings.display.scale = 0.8;
-        e.detail.settings.display.layoutMode = alphaTab.LayoutMode.Horizontal;
-      }
-    });
-
     at.addEventListener("alphaTab.renderStarted", (e) => {
+      console.log("addEventListener - I've started rendering");
       const isResize = e.detail;
       const selectedTracks = new Map();
       this.state.api.tracks.forEach((t) => {
@@ -731,7 +730,25 @@ class AlphaTab extends React.Component {
       });
     });
 
+    at.addEventListener("alphaTab.resize", (e) => {
+      console.log("REEEESSSSSSIIIIZE")
+        if(e.detail.newWidth > 750) {
+            e.detail.settings.display.scale = 1;
+            e.detail.settings.display.layoutMode = alphaTab.LayoutMode.Page;         
+        e.detail.settings.display.layoutMode = alphaTab.LayoutMode.Page;
+            e.detail.settings.display.layoutMode = alphaTab.LayoutMode.Page;         
+        e.detail.settings.display.layoutMode = alphaTab.LayoutMode.Page;
+            e.detail.settings.display.layoutMode = alphaTab.LayoutMode.Page;         
+        } else {
+            e.detail.settings.display.scale = 0.8;
+            e.detail.settings.display.layoutMode = alphaTab.LayoutMode.Horizontal;
+        }
+    });
+
+
+
     at.addEventListener("alphaTab.renderFinished", (e) => {
+      console.log("Event : I finished rendering")
       this.setState({
         isLoading: false,
       });
@@ -743,7 +760,7 @@ class AlphaTab extends React.Component {
 
       // reduce number of UI updates to second changes.
       const currentSeconds = (args.currentTime / 1000) | 0;
-      if (currentSeconds == previousTime || currentSeconds === 0) {
+      if (currentSeconds === previousTime || currentSeconds === 0) {
         return;
       }
       previousTime = currentSeconds;
@@ -751,11 +768,13 @@ class AlphaTab extends React.Component {
     });
 
     at.addEventListener("alphaTab.soundFontLoad", function (e) {
+      console.log("soundFont is loading");
       playerControls.setState({
         soundFontLoadPercentage: e.detail.loaded / e.detail.total,
       });
     });
     at.addEventListener("alphaTab.soundFontLoaded", function (e) {
+      console.log("soundFont finished loading");
       playerControls.setState({
         soundFontLoadPercentage: 1,
       });
