@@ -1,10 +1,10 @@
 //import './App.css';
 import React from 'react';
-import { FileUploader } from './components/FileUploader'
+import { FileUploader } from './components/FileUploader/FileUploader'
+import './components/FileUploader/FileUploader.css'
 import { TabRenderer } from './components/TabRenderer/TabRenderer'
-import './components/style.css';
-import './components/TabRenderer/alphatab-full.css'
-//import './style.css'
+import './style.css'
+
 //import './components/TabRenderer.css'
 import PPLogo from "./ressource/logo.svg"
 
@@ -28,17 +28,10 @@ class App extends React.Component {
     return (
 
       <div>
-        {/* 
-        <div class="header"> <img src={PPLogo} class="logo" alt="Perfect Peach Logo" /></div>
+        
+        <div class="header"> <img src={PPLogo} class="logo" alt="Perfect Peach Logo" /> </div>
 
         <div class="container main-content">
-
-          <div class="row audiostream">
-            <div class="col"></div>
-            <div class="col-6"> <TabRenderer /> </div>
-            <div class="col">  </div>
-          </div>
-
 
 
           <div class="row fileupload">
@@ -47,10 +40,16 @@ class App extends React.Component {
             <div class="col">  </div>
           </div>
 
+          <div class="row audiostream">
+            <div class="col"></div>
+            <div class="col-6"> <FileUploader /> </div>
+            <div class="col">  </div>
+          </div>
+
         </div>
-*/}
-        < TabRenderer />
-      </div>
+        </div>
+
+
 
 
 

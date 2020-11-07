@@ -636,7 +636,7 @@ class PlayerControlsGroup extends React.Component {
   }
 }
 
-export default class AlphaTab extends React.Component {
+export default class AlphaTabFull extends React.Component {
   constructor(props) {
     super(props);
     this.state = {

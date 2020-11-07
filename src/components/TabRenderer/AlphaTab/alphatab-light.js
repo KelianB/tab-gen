@@ -1,5 +1,4 @@
 import React from 'react';
-import * as alphaTab from '@coderline/alphatab';
 
 export default class AlphaTabLight extends React.Component {
     constructor(props) {
@@ -12,8 +11,7 @@ export default class AlphaTabLight extends React.Component {
     componentDidMount() {
         const container = this.refs.alphaTab;
         console.log(this.props.settings);
-        debugger;
-        this.state.api = new alphaTab.AlphaTabApi(container, this.props.settings);  
+        this.state.api = new window.alphaTab.AlphaTabApi(container, this.props.settings);  
     }        
 
     componentWillUnmount() {
@@ -32,5 +30,3 @@ export default class AlphaTabLight extends React.Component {
         );
     }
 }
-
-export {AlphaTabLight}
