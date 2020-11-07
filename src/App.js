@@ -11,7 +11,7 @@ import PPLogo from "./ressource/logo.svg"
 
 
 class App extends React.Component {
-
+/*
   componentDidMount () {
     const script = document.createElement("script");
     script.src = "/js/alphaTab/alphaTab.js";
@@ -19,6 +19,7 @@ class App extends React.Component {
 
     document.head.appendChild(script);
 }
+*/
 
   render() {
 
