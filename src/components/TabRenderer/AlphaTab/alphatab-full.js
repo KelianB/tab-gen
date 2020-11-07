@@ -436,21 +436,21 @@ class PlayerProgressIndicator extends React.Component {
   render() {
     return (
       this.props.percentage < 0.99 && (
-        <div className="at-player-loading progress">
-          <span className="progress-left">
+        <div className="at-player-loading progress-circle">
+          <span className="progress-circle-left">
             <span
-              className="progress-bar"
+              className="progress-circle-bar"
               style={{ transform: this.getLeftRotateTransform() }}
             ></span>
           </span>
-          <span className="progress-right">
+          <span className="progress-circle-right">
             <span
-              className="progress-bar"
+              className="progress-circle-bar"
               style={{ transform: this.getRightRotateTransform() }}
             ></span>
           </span>
-          <div className="progress-value w-100 h-100 rounded-circle d-flex align-items-center justify-content-center font-weight-bold">
-            <span className="progress-value-number">
+          <div className="progress-circle-value w-100 h-100 rounded-circle d-flex align-items-center justify-content-center font-weight-bold">
+            <span className="progress-circle-value-number">
               {(this.props.percentage * 100) | 0}
             </span>
             <sup className="small">%</sup>
