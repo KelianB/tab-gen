@@ -1,5 +1,4 @@
-import { AlphaTab } from './alphatab-full'
-import {AlphaTabLight } from './alphatab-light'
+import AlphaTab from './alphatab-full'
 import React from 'react';
 
 class TabRenderer extends React.Component {
@@ -26,10 +25,9 @@ class TabRenderer extends React.Component {
         };
 
         return (
-            
-            <AlphaTabLight tex={true} tracks ={[0]}> {alphatexString} </AlphaTabLight>
-
-            
+            <div>
+                <AlphaTab settings = {setting}/>
+            </div>
 
         )
 
