@@ -19,6 +19,8 @@ var storage = multer.diskStorage({
 
 var upload = multer({ storage: storage }).single('file')
 
+
+
 app.post('/upload', function (req, res) {
     upload(req, res, function (err) {
         if (err instanceof multer.MulterError) {
@@ -26,6 +28,7 @@ app.post('/upload', function (req, res) {
         } else if (err) {
             return res.status(500).json(err)
         }
+        return res.status(200).sendFile(__dirname + '/public/static/files/example.atex')
         return res.status(200).send(req.file)
     })
 });

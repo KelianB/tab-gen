@@ -13,14 +13,24 @@ class TabRenderer extends React.Component {
             tracks: [0]
         };
 
+        if (this.props.full == true) {
+            return (
+                <div>
+                    <AlphaTabFull settings= {{tex:true}} > {this.props.score} </AlphaTabFull>
+                    
+                </div>
+            )
+        }
+        else {
+                <div>
+                    <AlphaTabLight tex={true} tracks ={[0]}> {this.props.score} </AlphaTabLight>
+                </div>
+        }
 
-        return (
-            <div>
-                <AlphaTabFull settings = {setting}/>
-            </div>
 
 
-        )
+
+
 
     }
 }

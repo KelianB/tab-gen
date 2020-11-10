@@ -795,7 +795,7 @@ export default class AlphaTabFull extends React.Component {
           </div>
 
           <div className="at-viewport" ref="viewPort">
-            <div className="at-canvas" ref="alphaTab"></div>
+                <div className="at-canvas" ref="alphaTab"> {this.props.children}</div>
           </div>
         </div>
 

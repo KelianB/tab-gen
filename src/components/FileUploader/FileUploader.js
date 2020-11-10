@@ -5,6 +5,9 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.css';
 
+import { connect } from 'react-redux';
+import { processingIsOverAction } from '../ReduxStuff/Stuff'
+
 const URL = "http://localhost:8000/upload";
 const MAX_SIZE = 4 * (10 ** 6); // Max size in bytes (?)
 
@@ -15,6 +18,8 @@ class FileUploader extends React.Component {
             selectedFile: null,
         }
     }
+    
+    
 
     onChangeHandler = event => {
         console.log(event.target.files[0]);
@@ -68,7 +73,10 @@ class FileUploader extends React.Component {
 
     onClickHandler = () => {
         const data = new FormData();
+
+
         data.append('file', this.state.selectedFile)
+        console.log(this.state.selectedFile);
 
         axios.post(URL, data, {
 
@@ -79,6 +87,13 @@ class FileUploader extends React.Component {
         }).then(res => {
             toast.success('upload success')
             console.log("Upload Status : " + res.statusText)
+
+            console.log(res.data)
+
+            const score = res.data;
+            
+            this.props.processingIsOverAction(score);
+
         }).catch(err => {
             toast.error('upload fail')
             console.log("Upload Error : " + err.statusText)
@@ -96,7 +111,7 @@ class FileUploader extends React.Component {
 
 
                 <div class="form-group files">
-                    <label> Upload your file </label>
+                    <label className= "upload-title"> Upload your file </label>
                     <input type="file" name="file" onChange={this.onChangeHandler} />
                 </div>
 
@@ -112,5 +127,9 @@ class FileUploader extends React.Component {
     }
 }
 
-
-export { FileUploader }
+/*
+ * This line connects FileUploader react component with the Store so
+ * that FileUploader can dispatch action by using for instance
+ * 'this.props.processingIsOverAction'
+ */
+export default connect(null, {processingIsOverAction})(FileUploader)
