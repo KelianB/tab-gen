@@ -29,7 +29,7 @@ app.post('/upload', function (req, res) {
             return res.status(500).json(err)
         }
         return res.status(200).sendFile(__dirname + '/public/static/files/example.atex')
-        return res.status(200).send(req.file)
+        //return res.status(200).send(req.file)
     })
 });
 
