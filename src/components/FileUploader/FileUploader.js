@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.css';
 
 import { connect } from 'react-redux';
-import { processingIsOverAction } from '../ReduxStuff/Stuff'
+import { processingIsOverAction } from '../ReduxStuff/Actions'
 
 const URL = "http://localhost:8000/upload";
 const MAX_SIZE = 4 * (10 ** 6); // Max size in bytes (?)

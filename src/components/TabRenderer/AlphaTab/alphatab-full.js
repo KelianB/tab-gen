@@ -627,7 +627,7 @@ class PlayerControlsGroup extends React.Component {
             <LayoutSelector api={this.props.api} />
 
             <div className="at-logo">
-              powered by <img src="/img/alphatab.png" />
+              powered by <img src="/static/files/img/alphatab.png" />
             </div>
           </div>
         </div>

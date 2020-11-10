@@ -1,18 +1,8 @@
-import {combineReducers, createStore} from 'redux';
-import devToolsEnhancer from 'remote-redux-devtools';
+import {combineReducers} from 'redux';
+import {UPLOAD_IS_OVER,PROCESSING_IS_OVER} from './Actions'
 
-/**
- * Actions definition
- */
-const UPLOAD_IS_OVER = "UPLOAD_IS_OVER"
-const PROCESSING_IS_OVER = "PROCESSING_IS_OVER"
+//Reducers definition
 
-const processingIsOverAction = score => {return {type:PROCESSING_IS_OVER, score:score} };
-const uploadIsOverAction = () => {return {type:UPLOAD_IS_OVER}}
-
-/**
- * Reducers definition
- */
 
 const initialState = {
     uploadDone: false, //Upload of file on the server that will compute tabs out of audio
@@ -38,13 +28,5 @@ const PeachReducer = (state = initialState, action) => {
 const Reducers = combineReducers({
     peachReducer: PeachReducer,
   });
-  
 
-
-/**
- * Store creation
- */
-
-const Store = createStore(Reducers,window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
-
-export {Store, processingIsOverAction};
+export default Reducers
