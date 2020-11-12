@@ -3,7 +3,6 @@ import React from 'react';
 import FileUploader from './components/FileUploader/FileUploader'
 import './components/FileUploader/FileUploader.css'
 import { TabRenderer } from './components/TabRenderer/TabRenderer'
-import AlphaTabLight from './components/TabRenderer/AlphaTab/alphatab-light'
 import PPLogo from "./ressource/logo.svg"
 
 import { connect } from 'react-redux';

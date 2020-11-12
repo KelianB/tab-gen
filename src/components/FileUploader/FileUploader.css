@@ -23,7 +23,7 @@
 .files:after {
   pointer-events: none;
   position: absolute;
-  top: 60px;
+  top: 80px;
   left: 0;
   width: 50px;
   right: 0;
@@ -59,4 +59,21 @@
   color: white;
   font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
   font-size: x-large;
+}
+
+.upload-button {
+  color: rgba(255, 237, 188, 1);
+  background-color: #ee6c7a;
+  border-color: #ed4364;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+}
+
+.upload-button:disabled {
+  background-color: rgba(255, 255, 255, 0);
+  border-color: #ed4364;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.upload-button:disabled:hover {
+  color: rgba(255, 255, 255, 0.5);
 }
