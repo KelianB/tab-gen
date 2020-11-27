@@ -23,17 +23,23 @@ var storage = multer.diskStorage({
     }
 })
 
+// UPLOAD ONLY WORKS WITH a form-data BODY  with 'file' as key and the file as a value
 var upload = multer({ storage: storage }).single('file')
 
 
 
 app.post('/upload', function (req, res) {
+
+
     upload(req, res, function (err) {
         if (err instanceof multer.MulterError) {
             return res.status(500).json(err)
         } else if (err) {
             return res.status(500).json(err)
         }
+        console.log("Received and saved file :");
+        console.log(req.file);
+
         return res.status(200).sendFile(__dirname + '/public/static/files/example.atex')
         //return res.status(200).send(req.file)
     })
@@ -41,10 +47,14 @@ app.post('/upload', function (req, res) {
 
 .get('/api/versions', (req,res) => {
 
+    console.log("GET VERSIONS")
+
     res.status(200).json(versions);
 })
 
 .get('/api/version/:verion_id/:job_id/state', (req,res) => {
+
+    console.log("GET STATE - Etat actuel : " + etat )
 
 
     res.status(200).json({etat:etat})
@@ -52,10 +62,14 @@ app.post('/upload', function (req, res) {
 
 .get('/api/version/:version_id/:job_id/result', (req,res) => {
 
+
+
     if (etat) {
+        console.log("GET RESULT - RESULTAT DISPONIBLE")
         res.status(200).sendFile(__dirname + '/public/static/files/example.atex');
 
     } else {
+        console.log("GET RESULT - RESULTAT INDISPONIBLE")
         res.status(404).send("Le traitement n'existe pas ou n'est pas fini")
     }
 
@@ -67,37 +81,23 @@ app.post('/upload', function (req, res) {
 
     if (!etat) {
 
-        upload(req, res, (err) => {
-            if (err instanceof multer.MulterError) {
-                return res.status(500).json(err)
-            } else if (err) {
-                return res.status(500).json(err)
-            }
+        (async () => {
+            console.log("POST - PROCESSING BEGINS")
+            await sleep(TIMEOUT)
+            etat = true
+            console.log("POST - PROCESSING ENDED")
+        })()
 
-            //ADD A TIMER TO MOCK THE TAB PROCESSING TIME
-
-            if (!etat) {
-                (async () => {
-                    console.log("PROCESSING BEGINS")
-                    await sleep(TIMEOUT)
-                    etat = true
-                    console.log("PROCESSING ENDED")
-                })()
-            }
             
-            const mock_job_id = 1;
+        const mock_job_id = 1;
 
-            return res.status(200).json({job_id:mock_job_id});
-        })
+        return res.status(200).json({job_id:mock_job_id});
+
     } else {
+        console.log("POST - TRAITEMENT DEJA EN COURS")
         res.status(200).send("Traitement déjà en cours")
     }
     
-    
-
-
-
-
 
 });
 
