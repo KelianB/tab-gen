@@ -45,6 +45,12 @@ app.post('/upload', function (req, res) {
     })
 })
 
+// Réinitialise le mock (pratique pour les tests)
+.put('/restart', (req,res) => {
+    etat = false;
+    res.status(200).send("Etat réinitalisé")
+})
+
 .get('/api/versions', (req,res) => {
 
     console.log("GET VERSIONS")
