@@ -6,10 +6,11 @@ import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.css';
 
 import { connect } from 'react-redux';
-import { processingIsOverAction } from '../ReduxStuff/Actions'
+import { uploadIsOverAction,processingIsOverAction } from '../ReduxStuff/Actions'
 
-const URL = "http://localhost:8000/upload";
+const URL = "http://localhost:8000";
 const MAX_SIZE = 4 * (10 ** 6); // Max size in bytes (?)
+
 
 class FileUploader extends React.Component {
     constructor(props) {
@@ -18,6 +19,11 @@ class FileUploader extends React.Component {
             selectedFile: null,
             buttonDisabled: true,
         }
+    }
+
+    uploadURL = () => {
+        ///api/version/:version_id
+        return URL + `/api/version/${this.props.version_id}`
     }
     
     
@@ -80,7 +86,7 @@ class FileUploader extends React.Component {
         data.append('file', this.state.selectedFile)
         console.log(this.state.selectedFile);
 
-        axios.post(URL, data, {
+        axios.post(this.uploadURL(), data, {
 
             onUploadProgress: ProgressEvent => {
                 this.setState({ loaded: (ProgressEvent.loaded / ProgressEvent.total * 100), })
@@ -92,9 +98,14 @@ class FileUploader extends React.Component {
 
             console.log(res.data)
 
-            const score = res.data;
+            const job_id = res.data.job_id
+
+            this.props.uploadIsOverAction();
+
+
             
-            this.props.processingIsOverAction(score);
+            //const score = res.data;
+            //this.props.processingIsOverAction(score);
 
         }).catch(err => {
             toast.error('upload fail')
@@ -132,6 +143,6 @@ class FileUploader extends React.Component {
 /*
  * This line connects FileUploader react component with the Store so
  * that FileUploader can dispatch action by using for instance
- * 'this.props.processingIsOverAction'
+ * 'this.props.uploadIsOverAction'
  */
-export default connect(null, {processingIsOverAction})(FileUploader)
+export default connect(null, {uploadIsOverAction,processingIsOverAction})(FileUploader)

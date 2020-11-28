@@ -74,7 +74,9 @@ class LoadingScreen extends (React.Component) {
 
 
         if (await res.data) {
-            return this.props.processingIsOverAction(res.data)
+
+            
+            return this.props.processingIsOverAction(res.data) //res.data = partition/score
         } else {
             return
         }

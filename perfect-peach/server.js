@@ -27,6 +27,9 @@ var storage = multer.diskStorage({
 var upload = multer({ storage: storage }).single('file')
 
 
+var upload_without_saving = multer().single('file')
+
+
 
 app.post('/upload', function (req, res) {
 
@@ -85,24 +88,44 @@ app.post('/upload', function (req, res) {
 
 .post('/api/version/:version_id', (req,res) => {
 
-    if (!etat) {
 
-        (async () => {
-            console.log("POST - PROCESSING BEGINS")
-            await sleep(TIMEOUT)
-            etat = true
-            console.log("POST - PROCESSING ENDED")
-        })()
 
+    upload_without_saving(req, res, function (err) {
+        if (err instanceof multer.MulterError) {
+            return res.status(500).json(err)
+        } else if (err) {
+            return res.status(500).json(err)
+        }
+
+
+        console.log("POST- received file:")
+        console.log(req.file);
+
+        if (!etat) {
+
+            (async () => {
+                console.log("POST - PROCESSING BEGINS")
+                await sleep(TIMEOUT)
+                etat = true
+                console.log("POST - PROCESSING ENDED")
+            })()
+    
+                
+            const mock_job_id = 1;
+    
             
-        const mock_job_id = 1;
+    
+            return res.status(200).json({job_id:mock_job_id});
+    
+        } else {
+            console.log("POST - TRAITEMENT DEJA EN COURS")
+            res.status(200).send("Traitement déjà en cours")
+        }
 
-        return res.status(200).json({job_id:mock_job_id});
 
-    } else {
-        console.log("POST - TRAITEMENT DEJA EN COURS")
-        res.status(200).send("Traitement déjà en cours")
-    }
+    })
+
+
     
 
 });

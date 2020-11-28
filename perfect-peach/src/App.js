@@ -8,14 +8,11 @@ import LoadingScreen from './components/LoadingScreen/LoadingScreen'
 
 import { connect } from 'react-redux';
 
-
-
 class App extends React.Component {
   constructor(props){super(props)}
 
   transition = () =>  {
 
-    console.log(this.props)
 
     if (this.props.score) {
         return (
@@ -35,7 +32,32 @@ class App extends React.Component {
 
   transitionLoading = () => {
 
-    return (<LoadingScreen version_id = "0" job_id = "0"/>)
+    return (
+    <LoadingScreen version_id = "0" job_id = "0"/>
+    );
+  }
+
+  transitionFull = () => {
+
+    if (this.props.upload_done == false) {
+      return (        
+        <div class="row fileupload">
+          <div class="col"></div>
+          <div class="col-6"> <FileUploader version_id = "0" /> </div>
+          <div class="col">  </div>
+        </div>
+        )
+    } else if (this.props.upload_done == true && this.props.score_processing == true && this.props.score_processing_over == false) {
+          return (
+          <LoadingScreen version_id = "0" job_id = "0"/>
+          );
+    } else if (this.props.score_processing == false &&  this.props.score_processing_over == true &&  (this.props.score != null)) {
+          return (
+          <TabRenderer full = {true} score = {this.props.score}/>
+          );
+    }
+
+
   }
 
   
@@ -53,7 +75,7 @@ class App extends React.Component {
 
                 <div class="separation" />
                 
-                  <this.transitionLoading />
+                  <this.transitionFull />
           
                 <div class="separation" />
 
@@ -69,7 +91,13 @@ class App extends React.Component {
 
 
 const mapStateToProps =  store =>({
-  score: store.peachReducer.score
+  score: store.peachReducer.score,
+  uploading: store.peachReducer.uploading,
+  upload_done: store.peachReducer.uploadDone,
+  score_processing: store.peachReducer.score_processing,
+  score_processing_over: store.peachReducer.score_processing_over
+
 })
+
 
 export default connect(mapStateToProps)(App)
