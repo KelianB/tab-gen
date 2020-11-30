@@ -6,8 +6,8 @@ import numpy as np
 from time import time
 
 # Configuration
-SEGMENT_LENGTH = 0.2 # 0.2s
-RAW_AUDIO_DIR = "./raw/audio/"
+SEGMENT_LENGTH = 0.2 # seconds
+RAW_AUDIO_DIRS = ["./raw/audio/", "./raw/audio_overlay/"] # input variants
 ANNOTATIONS_DIR = "./raw/annotations/"
 PROCESSED_DIR = "./processed/"
 
@@ -27,7 +27,9 @@ if __name__ == "__main__":
         segmented_outputs = get_segmented_outputs(jam, SEGMENT_LENGTH)
         for i,segment_output in enumerate(segmented_outputs):
             formatted_segment_output = " ".join(segment_output.astype(str))
-            rows.append([img_name + "_" + str(i), formatted_segment_output])
+            # Create one entry for each variant of the input
+            for j in range(len(RAW_AUDIO_DIRS)):
+                rows.append([img_name + "_" + str(j) + "_" + str(i), formatted_segment_output])
     
     # Output to index.csv
     with open(os.path.join(PROCESSED_DIR, "index.csv"), "w", newline="") as csvfile:
@@ -38,7 +40,7 @@ if __name__ == "__main__":
     print("Preparing inputs...")
     start_time = time()
     for i,jam in enumerate(parsed_jams[0:n_files]):
-        create_segmented_inputs(jam, SEGMENT_LENGTH, RAW_AUDIO_DIR, PROCESSED_DIR)
+        create_segmented_inputs(jam, SEGMENT_LENGTH, RAW_AUDIO_DIRS, PROCESSED_DIR)
         avg_time = (time() - start_time) / (i+1)
         remaining_time = (n_files - (i+1)) * avg_time
         print("[" + str(i+1).zfill(3) + "/" + str(n_files) + "]", "Generated images for", jam.file_metadata.title + ". Estimated time remaining:", int(remaining_time), "seconds.")       

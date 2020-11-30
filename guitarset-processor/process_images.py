@@ -78,7 +78,7 @@ def save_image(cqt, output_path):
     plt.savefig(output_path)
 
 
-def create_segmented_inputs(jam, segment_length, raw_dir, processed_dir):
+def create_segmented_inputs(jam, segment_length, raw_dirs, processed_dir):
     """
         Create and save the spectrogram for each segment of a dataset entry.
         
@@ -89,19 +89,23 @@ def create_segmented_inputs(jam, segment_length, raw_dir, processed_dir):
             processed_dir  (string): the path to the directory where the images will be saved.
     """
 
-    audio_file = os.path.join(raw_dir, jam.file_metadata.title + "_mic.wav")
+    audio_file_name = jam.file_metadata.title + "_mic.wav"
+    audio_files = [os.path.join(d, audio_file_name) for d in raw_dirs]
+
     num_segments = math.floor(jam.file_metadata.duration / segment_length)
     num_segments -= 1 # Remove the last segment, which is likely to have incomplete audio data
 
-    # Iterate over segments
-    for i in range(num_segments):
-        filename = jam.file_metadata.title + "_" + str(i) + ".png"
-        output_file = os.path.join(processed_dir, filename)
+    # Iterate over files (raw, then overlay)
+    for j, audio_file in audio_files:
+        # Iterate over segments
+        for i in range(num_segments):
+            filename = jam.file_metadata.title + "_" + str(j) "_" + str(i) + ".png"
+            output_file = os.path.join(processed_dir, filename)
 
-        # Compute and save the spectrogram only if needed
-        if OVERWRITE_IMAGES or not os.path.isfile(output_file):
-            cqt = compute_cqt(audio_file, i, segment_length)
-            save_image(cqt, output_file)
+            # Compute and save the spectrogram only if needed
+            if OVERWRITE_IMAGES or not os.path.isfile(output_file):
+                cqt = compute_cqt(audio_file, i, segment_length)
+                save_image(cqt, output_file)
 
 
 # Testing
@@ -110,6 +114,7 @@ if __name__ == "__main__":
     AUDIO_ROOT = "./raw/audio/"
     audio_files = os.listdir(AUDIO_ROOT)
     audio_path = os.path.join(AUDIO_ROOT, "00_BN1-129-Eb_comp_mic.wav")
+    # Compute and show the transform
     cqt = compute_cqt(audio_path, 0, 0.2)
     plot_cqt(cqt)
 

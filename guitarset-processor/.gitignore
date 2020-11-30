@@ -1,5 +1,6 @@
 /raw/annotations/*
 /raw/audio/*
+/raw/audio_overlay/*
 /processed/*
 !.gitkeep
 
