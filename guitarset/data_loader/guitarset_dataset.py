@@ -3,7 +3,9 @@ from torch.utils.data import Dataset
 import pandas as pd
 import numpy as np
 import cv2
-import os
+import 
+
+INDEX_CSV = "index.csv"
 
 class GuitarSetDataset(Dataset):
     """GuitarSet dataset."""
@@ -18,7 +20,7 @@ class GuitarSetDataset(Dataset):
         """
         self.root_dir = root_dir
         self.transform = transform
-        self.csv = pd.read_csv(os.path.join(root_dir, "index.csv"), delimiter=";")
+        self.csv = pd.read_csv(os.path.join(root_dir, INDEX_CSV), delimiter=";")
 
     def __len__(self):
         return len(self.csv)
@@ -28,18 +30,17 @@ class GuitarSetDataset(Dataset):
             idx = idx.tolist()
 
         # Read image
-        img_name = os.path.join(self.root_dir, self.csv.iloc[idx, 0])
-        img_cv2 = cv2.imread(img_name + ".png", cv2.IMREAD_GRAYSCALE)
+        img_file = os.path.join(self.root_dir, self.csv.iloc[idx, 0])
+        img_cv2 = cv2.imread(img_file, cv2.IMREAD_GRAYSCALE)
 
         # Resize & convert
-        img_cv2 = cv2.resize(img_cv2, (160, 120), interpolation=cv2.INTER_CUBIC)
+        # img_cv2 = cv2.resize(img_cv2, (160, 120), interpolation=cv2.INTER_CUBIC)
         image = torch.from_numpy(np.array([img_cv2])).float()
          
         # Parse and one-hot-encode the annotation
         notes = np.fromstring(self.csv.iloc[idx, 1], dtype=np.int64, sep=" ")
         target = np.zeros((notes.size, 19)) # 6x19 matrix
         target[np.arange(notes.size), notes] = 1
-        #target = notes
 
         #if self.transform:
             #sample = self.transform(image, one_hot_encoded)
