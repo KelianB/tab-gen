@@ -12,6 +12,9 @@ def prepare_audio(frequencies, dur):
     # Get timesteps for each sample, T is note duration in seconds
     t = np.linspace(0, dur, int(dur * OUTPUT_SAMPLE_RATE), False)
 
+    if len(frequencies) == 0:
+            return (0 * t).astype(np.int16)
+
     # Generate sine wave notes
     notes =  [np.sin(f * t * 2 * np.pi) for f in frequencies]
 

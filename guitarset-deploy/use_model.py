@@ -99,35 +99,3 @@ def render_cqt_image(cqt):
     img = torch.from_numpy(np.array([img])).float()
 
     return img
-
-
-# Testing
-if __name__ == "__main__":
-    #AUDIO_FILE = "./test_inputs/input_00_BN1-129-Eb_comp_mic.wav"
-    AUDIO_FILE = "./test_inputs/input_mario.wav"
-    MAX_DURATION = 30
-    
-    print("Loading model...", end="\r")
-    model = load_model() 
-    print("Model loaded.\t\t")
-    
-    print("Loading input audio...", end="\r")
-    data, sr = librosa.load(AUDIO_FILE, sr=AUDIO_SAMPLE_RATE, mono=True)
-    print("Input audio loaded.\t\t\t")
-    
-    """
-    for i, img in enumerate(cqt_image_generator(data, MAX_DURATION)):
-        #plt.close("all")
-        #plt.figure(figsize=(3, 4))
-        #imgplot = plt.imshow(img, cmap="gray")
-        #plt.show()
-        cv2.imshow("img - " + str(i), img)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
-    """
-
-    print("Computing chords...", end="\r")
-    chords = [infer(model, img) for img in cqt_image_generator(data, MAX_DURATION)]
-    print("Computed chords.\t\t\t")
-
-    create_audio(chords, playback=True, save_to_file="output.wav")
