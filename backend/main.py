@@ -17,9 +17,9 @@ def get_api_versions():
     
 @app.route('/api/version/<int:version_id>', methods=['POST'])
 def post_audio(version_id):
-    f = request.files.get('file') ## TODO: change param
+    f = request.files.get('file')
     if f:
-        # TODO: We don't check the file integrity
+        # TODO: check the file integrity with librosa (for instance)
         s_f = str(uuid.uuid4())
         f.save('static/uploads/' + s_f)
         return jsonify({ 'filename': s_f }) ## TODO: change
