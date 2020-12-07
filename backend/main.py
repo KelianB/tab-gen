@@ -1,5 +1,9 @@
 from flask import Flask, request, jsonify
+from flask_socketio import SocketIO
+
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'ohxee6va6S'
+socketio = SocketIO(app)
 
 @app.route('/')
 def hello_world():
@@ -25,4 +29,4 @@ def get_tablature(version_id, job_id):
     
 
 if __name__ == '__main__':
-    app.run()
+    socketio.run(app)
