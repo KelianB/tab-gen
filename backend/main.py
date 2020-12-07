@@ -1,14 +1,15 @@
 from flask import Flask, request, jsonify
+import uuid
 from flask_socketio import SocketIO
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'ohxee6va6S'
+app.config['MAX_CONTENT_LENGTH'] = 10 * (1000 * 1000) # 10 Mo
 socketio = SocketIO(app)
 
 @app.route('/')
 def hello_world():
     return 'Hello, World!'
-    
     
 @app.route('/api/versions', methods=['GET'])
 def get_api_versions():
@@ -16,6 +17,12 @@ def get_api_versions():
     
 @app.route('/api/version/<int:version_id>', methods=['POST'])
 def post_audio(version_id):
+    f = request.files.get('file') ## TODO: change param
+    if f:
+        # TODO: We don't check the file integrity
+        s_f = str(uuid.uuid4())
+        f.save('static/uploads/' + s_f)
+        return jsonify({ 'filename': s_f }) ## TODO: change
     return jsonify({}) ## TODO: Websocket ?
 
 @app.route('/api/version/<int:version_id>/<int:job_id>/state', methods=['GET'])
