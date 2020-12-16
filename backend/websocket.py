@@ -1,17 +1,12 @@
-from flask_socketio import Namespace, emit
+from flask_socketio import Namespace, emit, join_room, leave_room
 
 class SocketNamespace(Namespace):
-
-    def on_connect(self):
-        print('miam')
 
     def on_request_progress(self, data):
         job_id = data['job_id']
         if job_id:
-            print(job_id)
-            print(request.sid)
             progress = {
-                done: False
+                "done": False
             }
             status = {
                 "job_id": job_id,

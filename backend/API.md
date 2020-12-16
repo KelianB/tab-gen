@@ -72,7 +72,7 @@ Réponse possible: un id correspond au traitement ("job_id")
 
 ```json
 {
-  "job_ws": "ws://localhost/job/5"
+  "job_id": "5"
 }
 ```
 
