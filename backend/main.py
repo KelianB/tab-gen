@@ -18,9 +18,7 @@ def test_socket(): # TODO : remove !
     <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
     <script type="text/javascript" charset="utf-8">
         var socket = io("/api/job");
-        socket.on('connect', function() {
-            socket.emit('request_progress', { "job_id":4 });
-        });
+        socket.on('connect', () => socket.emit('request_progress', { "job_id":4 }));
         socket.on("current_status", (data) => console.log(data));
         socket.on("current_progress", (data) => console.log(data));
     </script>
@@ -37,7 +35,8 @@ def get_model_versions():
         version = {
             "id": _id,
             "name": model_versions.versions[_id].name(),
-            "description": model_versions.versions[_id].description()
+            "description": model_versions.versions[_id].description(),
+            "steps": model_versions.versions[_id].steps()
         }
         result.append(version)
     return jsonify(result)
