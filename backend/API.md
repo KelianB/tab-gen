@@ -92,15 +92,15 @@ Envoie le lien du WebSocket lié au job spécifié en paramètre
 }
 ```
 
-## **WebSocket** /api/job/**:job_id**
+## **WebSocket** /api/job
 ---
 
-Ouvre un WebSocket avec le serveur responsable du job spécifié. Celui-ci publie alors les informations liés à ce job et met à jour périodiquement sa progression.
+Ouvre un WebSocket avec le serveur responsable des jobs. Celui-ci publie alors les informations liés à ce job et met à jour périodiquement sa progression.
 
 ### **Types de message**
 
 ```
-request-progress => null // Envoyé par les clients, traité par le serveur en théorie
+request-progress => { "job_id": 1 } // Envoyé par les clients, traité par le serveur en théorie
 current-status => { // Envoyé par le serveur, traité par les clients en théorie
     "job_id": 1,
     "version_id": 4,
@@ -111,20 +111,21 @@ current-status => { // Envoyé par le serveur, traité par les clients en théor
     ],
     "result_url": null,
     "progress": {
-        step = 1
-        max_step = 3
-        step_progress = 0.9,
-        total_progress = 0.25,
-        done = false
+        "step": 1
+        "max_step": 3
+        "step_progress": 0.9,
+        "total_progress:" 0.25,
+        "done:" false
     }
 }
 current-progress => {
+    "job_id": 1,
     "progress": {
-        step = 1
-        max_step = 3
-        step_progress = 0.9,
-        total_progress = 0.25,
-        done = false
+        "step": 1
+        "max_step": 3
+        "step_progress": 0.9,
+        "total_progress:" 0.25,
+        "done:" false
     }
 }
 ```
