@@ -8,6 +8,7 @@ app.config['MAX_CONTENT_LENGTH'] = 10 * (1000 * 1000) # 10 Mo
 socketio = SocketIO(app)
 
 import model_versions
+from websocket import SocketNamespace
 
 @app.route('/')
 def hello_world():
@@ -44,5 +45,6 @@ def get_tablature(version_id, job_id):
     return jsonify({}) ## TODO: We won't send a JSON, but a guitar tablature
     
 
+socketio.on_namespace(SocketNamespace('/api/job'))
 if __name__ == '__main__':
-    socketio.run(app)
+    socketio.run(app) 
