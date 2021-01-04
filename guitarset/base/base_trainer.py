@@ -2,7 +2,9 @@ import torch
 from abc import abstractmethod
 from numpy import inf
 from logger import TensorboardWriter
-
+from sklearn.metrics import confusion_matrix, classification_report
+import numpy as np
+import re
 
 class BaseTrainer:
     """
@@ -140,6 +142,10 @@ class BaseTrainer:
         torch.save(state, filename)
         self.logger.info("Saving checkpoint: {} ...".format(filename))
         if save_best:
+            # Compute global metrics and merge them with the checkpoint
+            self.logger.info("Computing metrics...")
+            self.save_metrics()
+
             best_path = str(self.checkpoint_dir / 'model_best.pth')
             torch.save(state, best_path)
             self.logger.info("Saving current best: model_best.pth ...")
@@ -170,3 +176,101 @@ class BaseTrainer:
             self.optimizer.load_state_dict(checkpoint['optimizer'])
 
         self.logger.info("Checkpoint loaded. Resume training from epoch {}".format(self.start_epoch))
+
+    def save_metrics(self):
+        labels = list(range(0,19))
+        filename_metrics = str(self.checkpoint_dir / 'metrics_best.csv')
+        filename_outputs = str(self.checkpoint_dir / 'outputs_best.csv')
+
+        y_true_val = None
+        y_pred_val = None
+        y_true_train = None
+        y_pred_train = None
+
+        data_train = self.data_loader.unshuffled_train
+        data_valid = self.data_loader.unshuffled_valid
+
+        # Forward pass the validation set
+        print("Forward pass - validation set")
+        for batch_idx, (data, target) in enumerate(data_valid):
+            data = data.to(self.device)
+            pred = self.model(data).cpu().detach()         
+
+            # One-hot decoding from shape (batch_size, 6, 19) to shape (batch_size, 6)
+            target = np.argmax(target, axis=2)
+            pred = np.argmax(pred, axis=2)
+
+            # Store
+            y_true_val = target if batch_idx == 0 else np.concatenate((y_true_val, target))
+            y_pred_val = pred   if batch_idx == 0 else np.concatenate((y_pred_val, pred))
+
+        # Forward pass the training set
+        print("Forward pass - training set")
+        for batch_idx, (data, target) in enumerate(data_train):
+            data = data.to(self.device)
+            pred = self.model(data).cpu().detach()         
+
+            # One-hot decoding from shape (batch_size, 6, 19) to shape (batch_size, 6)
+            target = np.argmax(target, axis=2)
+            pred = np.argmax(pred, axis=2)
+
+            # Store
+            y_true_train = target if batch_idx == 0 else np.concatenate((y_true_train, target))
+            y_pred_train = pred   if batch_idx == 0 else np.concatenate((y_pred_train, pred))
+
+        # shape of y_true and y_pred: (n_samples, 6)
+        
+        print("Calculating confusion matrices")
+        csv_rows = get_csv_confusion_matrices(y_true_train, y_pred_train, labels)
+  
+        print("Calculating classification reports")
+        csv_rows += [] + get_csv_cls_reports(y_true_train, y_pred_train, labels)
+
+        import csv
+
+        # Save outputs to .csv
+        n_val = y_pred_val.shape[0]
+        with open(filename_outputs, "w", newline="") as csvfile:
+            writer = csv.writer(csvfile, delimiter=",", quotechar="|", quoting=csv.QUOTE_MINIMAL)
+  
+            true_val =   y_true_val.tolist()
+            true_train = y_true_train.tolist()
+            pred_val =   y_pred_val.tolist()
+            pred_train = y_pred_train.tolist()
+            n_val = len(pred_val)
+            rows = [["val"]   + cols + [sum(true_val[i])]   for i,cols in enumerate(pred_val)] \
+                 + [["train"] + cols + [sum(true_train[i])] for i,cols in enumerate(pred_train)]
+            ordered_rows = np.array(rows)[self.data_loader.unshuffle_idx].tolist()
+            writer.writerows(ordered_rows)
+
+        # Save metrics to .csv
+        with open(filename_metrics, "w", newline="") as csvfile:
+            writer = csv.writer(csvfile, delimiter=",", quotechar="|", quoting=csv.QUOTE_MINIMAL)
+            writer.writerows(csv_rows)
+    
+
+def get_csv_confusion_matrices(y_true, y_pred, labels):
+    csv_rows = []
+    for i in range(6):
+        csv_rows.append(["Confusion Matrix - String #" + str(i+1)])
+        matrix = confusion_matrix(y_true[:,i], y_pred[:,i], labels=labels)
+        csv_rows.append([""]+list(range(len(matrix))))
+        for j in range(len(matrix)):
+            csv_rows.append([j] + matrix[j].tolist())
+    return csv_rows
+
+def get_csv_cls_reports(y_true, y_pred, labels):
+    csv_rows = []
+    for i in range(6):
+        csv_rows.append(["Classification report - String #" + str(i+1)])
+        report = classification_report(y_true[:,i], y_pred[:,i], labels=labels)
+        report = re.sub(r"\n\n", r"\n", report)
+        report = re.sub(r"^'\s+", "", report)
+        report = re.sub(r"'", ",", report)
+        report = re.sub(r"\n\s{2,}", r"\n", report)
+        report = re.sub(r"\s{2,}", ",", report)
+                    
+        for k,x in enumerate(report.split("\n")[:-1]):
+            cols = ([""] if k == -1 else []) + x.split(",")
+            csv_rows.append(cols)
+    return csv_rows
