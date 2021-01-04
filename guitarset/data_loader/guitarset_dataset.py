@@ -3,9 +3,9 @@ from torch.utils.data import Dataset
 import pandas as pd
 import numpy as np
 import cv2
-import 
+import os
 
-INDEX_CSV = "index.csv"
+INDEX_CSV = "index0.csv"
 
 class GuitarSetDataset(Dataset):
     """GuitarSet dataset."""
@@ -20,7 +20,7 @@ class GuitarSetDataset(Dataset):
         """
         self.root_dir = root_dir
         self.transform = transform
-        self.csv = pd.read_csv(os.path.join(root_dir, INDEX_CSV), delimiter=";")
+        self.csv = pd.read_csv(os.path.join(root_dir, INDEX_CSV), delimiter=";", header=None)
 
     def __len__(self):
         return len(self.csv)
