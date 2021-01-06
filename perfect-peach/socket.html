@@ -17,9 +17,21 @@
   <script src = "/socket.io/socket.io.js"> </script>
   <script type="text/javascript" charset="utf-8">
 
-      var socket = io('/admin');
+      var socket = io('/api/job');
+      socket.emit("request-progress", {'job_id':1});
 
-      //socket.on("current_status", (data) => console.log("SERVER RECEIVED : " + data));
+      socket.on('current-status', (data) => {
+        console.log("CURRENT STATUS RECEIVED : ")
+        console.log(data)
+      });
+
+      socket.on('current-progress', (data) => {
+        console.log("CURRENT PROGRESS RECEIVED : ")
+        console.log(data)
+      });
+
+
+
   </script>
 
   <!-- FIN CODE SOCKET -->

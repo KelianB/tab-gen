@@ -12,21 +12,6 @@ const PORT = 8000;
 const TIMEOUT = 3000;
 var etat = false;
 
-const CURRENT_STATUS = {
-  // Envoyé par le serveur, traité par les clients en théorie
-  job_id: 1,
-  version_id: 4,
-  steps: ["Preprocessing", "Processing", "Saving"],
-  result_url: null,
-  progress: {
-    step: 1,
-    max_step: 3,
-    step_progress: 0.9,
-    total_progress: 0.25,
-    done: false,
-  },
-};
-
 app.use(cors());
 
 var storage = multer.diskStorage({
@@ -44,6 +29,8 @@ var upload = multer({ storage: storage }).single("file");
 var upload_without_saving = multer().single("file");
 
 app
+
+// Ancienne route pour tester l'upload de fichier
   .post("/upload", function (req, res) {
     upload(req, res, function (err) {
       if (err instanceof multer.MulterError) {
@@ -73,12 +60,14 @@ app
     res.status(200).json(versions);
   })
 
+  // TO DELETE AFTER IMPLEMENTING WEBSOCKETS
   .get("/api/version/:verion_id/:job_id/state", (req, res) => {
     console.log("GET STATE - Etat actuel : " + etat);
 
     res.status(200).json({ etat: etat });
   })
 
+ // TO DELETE AFTER IMPLEMENTING WEBSOCKETS
   .get("/api/:job_id/result", (req, res) => {
     if (etat) {
       console.log("GET RESULT - RESULTAT DISPONIBLE");
@@ -109,9 +98,9 @@ app
         })();
 
         const mock_job_id = 1;
-        const mock_ws_url = `ws://localhost:${PORT}/job/`;
+        //const mock_ws_url = `ws://localhost:${PORT}/job/`;
 
-        return res.status(200).json({ job_ws: mock_ws_url });
+        return res.status(200).json({ job_ws: mock_job_id });
       } else {
         console.log("POST - TRAITEMENT DEJA EN COURS");
         res.status(200).send("Traitement déjà en cours");
@@ -127,32 +116,40 @@ app
     res.status(200).sendFile(__dirname + '/socket.html');
   });
 
-io.of('/admin')
+
+  
+const CURRENT_PROGRESS = {
+  step: 1,
+  max_step: 3,
+  step_progress: 0.9,
+  total_progress: 0.25,
+  done: false,
+};
+const CURRENT_STATUS = {
+    // Envoyé par le serveur, traité par les clients en théorie
+    job_id: 1,
+    version_id: 4,
+    steps: ["Preprocessing", "Processing", "Saving"],
+    result_url: null,
+    progress: CURRENT_PROGRESS,
+  };
+
+// socket io route
+io.of('/api/job')
+
 .on("connection", (socket) => {
-
-
-
-
-
   console.log(`Connecté au client ${socket.id}`);
+
+  socket.on("request-progress", (data) => {
+    //data = {"job_id":1}
+    console.log("Progress requested for job : " + data.job_id);
+    socket.emit('current-status', CURRENT_STATUS);
+    socket.emit('current-progress', CURRENT_PROGRESS);
+  });
+
+
 });
 
-// io.on("current_status" ,(socket) => {
-//     console.log('')
-// })
-
-// io.on('/api/job/:job_id', (socket) => {
-
-//     // request-progress
-//     socket.on("request-progress", () => {
-//         console.log("Progress requested")
-//         socket.emit('current-progress',CURRENT_STATUS)
-//     })
-
-//     // current-status
-//     // current-progress
-//     console.log('TODO')
-// })
 
 server.listen(PORT, function () {
   console.log("App runnning on port " + PORT);
