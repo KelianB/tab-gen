@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 
 const sleep = require('util').promisify(setTimeout)
 
-const TIMEOUT = 3000 // Time between the response of the API and the next request to check on the processing state
+const TIMEOUT = 300 // Time between the response of the API and the next request to check on the processing state
 const URL = "http://localhost:8000"
 
 /**
