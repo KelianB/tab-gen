@@ -15,7 +15,6 @@ const initialState = {
 const PeachReducer = (state = initialState, action) => {
     switch (action.type) {
         case UPLOAD_IS_OVER:
-            console.log("ALED")
             return {...state, uploadDone:true, uploading:false, score_processing:true}
 
         case PROCESSING_IS_OVER:

@@ -5,6 +5,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.css';
 
+
 import { connect } from 'react-redux';
 import { uploadIsOverAction,processingIsOverAction } from '../ReduxStuff/Actions'
 
@@ -12,7 +13,11 @@ const URL = "http://localhost:8000";
 const MAX_SIZE = 4 * (10 ** 6); // Max size in bytes (?)
 
 
+
+
+
 class FileUploader extends React.Component {
+    //props = {version_id:0}
     constructor(props) {
         super(props);
         this.state = {
@@ -22,8 +27,7 @@ class FileUploader extends React.Component {
     }
 
     uploadURL = () => {
-        ///api/version/:version_id
-        return URL + `/api/version/${this.props.version_id}`
+        return URL + `/api/job/`
     }
     
     
