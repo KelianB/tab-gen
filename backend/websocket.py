@@ -18,3 +18,4 @@ class SocketNamespace(Namespace):
             emit('current_status', status)
             emit('current_progress', {"job_id": job_id, "progress": progress}, room=job_id)
             join_room(job_id)
+

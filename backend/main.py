@@ -44,11 +44,12 @@ import model_versions
 from websocket import SocketNamespace
 
 socket_namespace = SocketNamespace('/api/job')
+socketio.on_namespace(socket_namespace)
 
 @app.route('/')
 def test_socket(): # TODO : remove !
     return """
-    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+    <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
     <script type="text/javascript" charset="utf-8">
         var socket = io("/api/job");
         socket.on('connect', () => socket.emit('request_progress', { "job_id":4 }));
@@ -96,6 +97,6 @@ def post_audio():
 def get_tablature(job_id):
     abort(404) # TODO
 
-socketio.on_namespace(socket_namespace)
 if __name__ == '__main__':
-    socketio.run(app) 
+    socketio.run(app)
+
