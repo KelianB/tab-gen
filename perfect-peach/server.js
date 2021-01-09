@@ -8,9 +8,11 @@ var app = express();
 const server = require("http").Server(app);
 const io = require("socket.io")(server)
 const versions = require("./mock_back/versions.json");
+const { STATUS_CODES } = require("http");
 const PORT = 8000;
 const URL =  "http://localhost:" + PORT
-const TIMEOUT = 3000;
+const PROCESSING_TIME = 4000; //Processing time
+const TIMEOUT = 500; // Time between two emission of current-status message via socket.io
 var etat = false;
 
 var CURRENT_PROGRESS = {
@@ -120,8 +122,10 @@ app
       if (!etat) {
         (async () => {
           console.log("POST - PROCESSING BEGINS");
-          await sleep(TIMEOUT);
-          etat = true;
+
+          await sleep(PROCESSING_TIME);
+
+          
 
           CURRENT_PROGRESS = {
             step: 1,
@@ -137,7 +141,7 @@ app
               result_url: URL + "/api/job/" + CURRENT_STATUS.job_id + "/result",
               progress: CURRENT_PROGRESS,
             };
-
+            etat = true;
           console.log("POST - PROCESSING ENDED");
         })();
 
@@ -167,10 +171,37 @@ app
  * SOCKET IO STUFF
  * 
  */
+
+let requestTrack = []
+
 io.of('/api/job')
 
 .on("connection", (socket) => {
+
+// For tracking the time between each socket message
+  const start = Date.now()
+
+  const continuousEmission = () => {
+
+    if (etat == false) {
+      console.log("Sending current process status")
+      socket.emit('current-status', CURRENT_STATUS)
+
+      requestTrack.push(Date.now())
+
+      setTimeout( continuousEmission, TIMEOUT)
+  
+    } else {
+      console.log("Sending current process status - ENDED")
+      socket.emit('current-status', CURRENT_STATUS)
+      requestTrack.push(Date.now())
+    }
+  
+  }
+
   console.log(`Connecté au client ${socket.id}`);
+
+  continuousEmission();
 
   socket.on("request-progress", (data) => {
     //data = {"job_id":1}
@@ -179,6 +210,12 @@ io.of('/api/job')
     console.log("Progress requested for job : " + data.job_id);
     socket.emit('current-status', CURRENT_STATUS);
     socket.emit('current-progress', CURRENT_PROGRESS);
+    requestTrack.push(Date.now())
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Client disconnect')
+    console.log(requestTrack.map(x => x - start))
   });
 
 
