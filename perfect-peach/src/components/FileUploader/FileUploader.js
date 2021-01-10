@@ -5,9 +5,17 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.css';
 
+import CustomizedSteppers from './copycat'
+
 
 import { connect } from 'react-redux';
 import { uploadIsOverAction,processingIsOverAction } from '../ReduxStuff/Actions'
+
+
+
+import ToggleButton from '@material-ui/lab/ToggleButton';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import ToolTip from '@material-ui/core/Tooltip'
 
 const URL = "http://localhost:8000";
 const MAX_SIZE = 4 * (10 ** 6); // Max size in bytes (?)
@@ -23,14 +31,15 @@ class FileUploader extends React.Component {
         this.state = {
             selectedFile: null,
             buttonDisabled: true,
+            models: [],
+            selectedModel: null,
         }
     }
+    // Upload related methods
 
     uploadURL = () => {
         return URL + `/api/job/`
     }
-    
-    
 
     onChangeHandler = event => {
         console.log(event.target.files[0]);
@@ -38,7 +47,7 @@ class FileUploader extends React.Component {
             this.setState({
                 selectedFile: event.target.files[0],
                 loaded: 0,
-                buttonDisabled: false,
+                buttonDisabled: (this.state.selectedModel != null) ? false : true,
             })
         }
 
@@ -85,12 +94,14 @@ class FileUploader extends React.Component {
 
     onClickHandler = () => {
         const data = new FormData();
-
+        const params = {"version_id":this.state.selectedModel}
 
         data.append('file', this.state.selectedFile)
+
+
         console.log(this.state.selectedFile);
 
-        axios.post(this.uploadURL(), data, {
+        axios.post(this.uploadURL(), data, {params:params}, {
 
             onUploadProgress: ProgressEvent => {
                 this.setState({ loaded: (ProgressEvent.loaded / ProgressEvent.total * 100), })
@@ -121,10 +132,58 @@ class FileUploader extends React.Component {
 
     }
 
+    // Version related methods
+
+    versionURL = () => {
+        return URL + '/api/versions'
+    }
+
+    handleVersion = (event, newModel) => {
+        this.setState({selectedModel: newModel, buttonDisabled:(this.state.selectedFile != null) ? false: true}, () => console.log(this.state.selectedModel))
+    }
+
+    getModelVersions = () => {
+
+        fetch( this.versionURL() )
+         .then(res => res.json())
+         .then(models => {this.setState({models:models})})
+    }
+
+    componentDidMount = () => {
+        this.getModelVersions()
+    }
+
+    
+
     render() {
+        const WrappedToolTip = (props,ref) => <ToolTip {...props} />;
+
+        const { models } = this.state;
+
 
         return (
+
+
             <div class="container">
+
+                <div class="form-group">
+                    <label className= "upload-title"> SELECT THE MODEL </label>
+
+                    <ToggleButtonGroup value = {this.selectedModel} exclusive onChange = {this.handleVersion} >
+
+                        { 
+                            models.map((model) => 
+                                <WrappedToolTip title = {model.description} key = {model.id}>
+
+                                    <ToggleButton value = {model.id} >
+                                        {model.name}
+                                    </ToggleButton>
+
+                                </WrappedToolTip>)
+                        }
+
+                    </ToggleButtonGroup>
+                </div>
 
 
                 <div class="form-group files">
@@ -138,6 +197,7 @@ class FileUploader extends React.Component {
                 </div>
 
                 <button type="button" class="btn upload-button btn-block" disabled={this.state.buttonDisabled} onClick={this.onClickHandler}> UPLOAD </button>
+
 
             </div>
         )
