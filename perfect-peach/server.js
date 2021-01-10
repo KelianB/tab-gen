@@ -118,6 +118,7 @@ app
 
       console.log("POST- received file:");
       console.log(req.file);
+      console.log("With version_id : " + req.query.version_id);
 
       if (!etat) {
         (async () => {
