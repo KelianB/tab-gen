@@ -169,17 +169,17 @@ class FileUploader extends React.Component {
                 <div class="form-group">
                     <label className= "upload-title"> SELECT THE MODEL </label>
 
-                    <ToggleButtonGroup value = {this.selectedModel} exclusive onChange = {this.handleVersion} >
+                    <ToggleButtonGroup value = {this.state.selectedModel} exclusive onChange = {this.handleVersion} id="o" aria-label = "mdr"  >
 
                         { 
                             models.map((model) => 
-                                <WrappedToolTip title = {model.description} key = {model.id}>
-
+                            // <WrappedToolTip title = {model.description} key = {model.id}>
                                     <ToggleButton value = {model.id} >
                                         {model.name}
                                     </ToggleButton>
 
-                                </WrappedToolTip>)
+                                // </WrappedToolTip>
+                                )
                         }
 
                     </ToggleButtonGroup>
