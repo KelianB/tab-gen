@@ -43,6 +43,13 @@ def generate_dataset():
         # Also create the image dir
         os.makedirs(os.path.join(PROCESSED_DIR, str(j)), exist_ok=True)
 
+    # Output index of solo files without any background
+    solo_rows = [r for r in rows[0] if "solo" in r[0]]
+    output_index_csv("index0_solo.csv", solo_rows)
+    # Output index of comp files without any background
+    comp_rows = [r for r in rows[0] if "comp" in r[0]]
+    output_index_csv("index0_comp.csv", comp_rows)
+
     # Prepare inputs
     print("Preparing inputs...\t\t\t")
     for i,jam in enumerate(parsed_jams[0:n_files]):
