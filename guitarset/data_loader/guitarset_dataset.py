@@ -42,7 +42,8 @@ class GuitarSetDataset(Dataset):
         target = np.zeros((notes.size, 19)) # 6x19 matrix
         target[np.arange(notes.size), notes] = 1
 
-        #if self.transform:
-            #sample = self.transform(image, one_hot_encoded)
+        if self.transform:
+          transformed = self.transform({"image": image, "target": target})
+          image, target = transformed["image"], transformed["target"]
 
         return image, target
