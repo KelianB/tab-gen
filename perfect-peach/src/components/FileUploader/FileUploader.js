@@ -5,9 +5,6 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.css';
 
-import CustomizedSteppers from './copycat'
-
-
 import { connect } from 'react-redux';
 import { uploadIsOverAction,processingIsOverAction } from '../ReduxStuff/Actions'
 
