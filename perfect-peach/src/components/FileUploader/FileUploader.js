@@ -21,7 +21,6 @@ import {BACK_URL, UPLOAD_MAX_SIZE, POST_FILE_UPLOAD_ROUTE, GET_VERSIONS_ROUTE} f
 
 
 class FileUploader extends React.Component {
-    //props = {version_id:0}
     constructor(props) {
         super(props);
         this.state = {
@@ -109,9 +108,9 @@ class FileUploader extends React.Component {
 
             console.log(res.data)
 
-            const job_id = res.data.job_id
+            const job_id = res.data.job_ws
 
-            this.props.uploadIsOverAction();
+            this.props.uploadIsOverAction(job_id);
 
 
             

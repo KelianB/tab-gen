@@ -34,7 +34,7 @@ import {BACK_URL,WS_END_POINT, DEBOUNCE_TIMEOUT} from '../../config.js'
 
 class LoadingScreen extends (React.Component) {
     constructor(props) {
-        //Expected Props : job_id, version_id
+        //Expected Props : job_id
         super(props)
         this.state = {
             tab_processing: true,
@@ -58,6 +58,7 @@ class LoadingScreen extends (React.Component) {
 
             return this.props.processingIsOverAction(res.data) //res.data = partition/score
         } else {
+            console("this shoudn't go there")
             return
         }
     }

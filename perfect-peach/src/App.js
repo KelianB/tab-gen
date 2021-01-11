@@ -23,18 +23,25 @@ class App extends React.Component {
       return (        
         <div class="row fileupload">
           <div class="col"></div>
-          <div class="col-6"> <FileUploader version_id = "0" /> </div>
+          <div class="col-6"> 
+            <FileUploader />
+          </div>
           <div class="col">  </div>
         </div>
         )
-    } else if (this.props.upload_done == true && this.props.score_processing == true && this.props.score_processing_over == false) {
+    } else if (this.props.upload_done == true && this.props.score_processing == true && this.props.score_processing_over == false && this.props.job_id != null) {
           return (
-          <LoadingScreen version_id = "0" job_id = "0"/>
+          <LoadingScreen job_id = {this.props.job_id}/>
           );
     } else if (this.props.score_processing == false &&  this.props.score_processing_over == true &&  (this.props.score != null)) {
+
           return (
           <TabRenderer full = {true} score = {this.props.score}/>
           );
+
+          
+    } else {
+          return (<div>something went wrong :'( </div>)
     }
 
 
@@ -75,8 +82,8 @@ const mapStateToProps =  store =>({
   uploading: store.peachReducer.uploading,
   upload_done: store.peachReducer.uploadDone,
   score_processing: store.peachReducer.score_processing,
-  score_processing_over: store.peachReducer.score_processing_over
-
+  score_processing_over: store.peachReducer.score_processing_over,
+  job_id: store.peachReducer.job_id
 })
 
 
