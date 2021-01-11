@@ -1,7 +1,7 @@
 from torchvision import datasets, transforms
 from base import BaseDataLoader
 from data_loader.guitarset_dataset import GuitarSetDataset
-from data_loader.transforms import RandomColumnCutout
+from data_loader.transforms import RandomColumnCutout, RandomRowCutout
 
 """
 # Example Data Loader
@@ -23,7 +23,8 @@ class GuitarSetDataLoader(BaseDataLoader):
     """
     def __init__(self, data_dir, batch_size, shuffle=True, validation_split=0.0, num_workers=1, training=True):
         transform = transforms.Compose([
-            RandomColumnCutout()
+            RandomColumnCutout(),
+            RandomRowCutout(),
         ])
         self.dataset = GuitarSetDataset(data_dir, transform=transform)
         super().__init__(self.dataset, batch_size, shuffle, validation_split, num_workers)
