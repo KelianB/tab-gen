@@ -18,8 +18,8 @@ var etat = false;
 var CURRENT_PROGRESS = {
   step: 1,
   max_step: 3,
-  step_progress: 0.9,
-  total_progress: 0.25,
+  step_progress: 0.0,
+  total_progress: 0.0,
   done: false,
 };
 var CURRENT_STATUS = {
@@ -129,9 +129,9 @@ app
           
 
           CURRENT_PROGRESS = {
-            step: 1,
+            step: 3,
             max_step: 3,
-            step_progress: 0.9,
+            step_progress: 1,
             total_progress: 1,
             done: true,
           };
@@ -173,6 +173,17 @@ app
  * 
  */
 
+
+
+const updateStatus = (x) => {
+  CURRENT_PROGRESS = {...CURRENT_PROGRESS, step_progress:CURRENT_PROGRESS.step_progress+x, total_progress:CURRENT_PROGRESS.total_progress+x/3}
+  if (CURRENT_PROGRESS.step_progress > 1.0 && CURRENT_PROGRESS.step < CURRENT_PROGRESS.max_step) {
+    CURRENT_PROGRESS = {...CURRENT_PROGRESS, step_progress:x, step:CURRENT_PROGRESS.step+1}
+  } 
+
+  CURRENT_STATUS = {...CURRENT_STATUS, progress: CURRENT_PROGRESS}
+}
+
 let requestTrack = []
 
 io.of('/api/job')
@@ -185,6 +196,7 @@ io.of('/api/job')
   const continuousEmission = () => {
 
     if (etat == false) {
+      updateStatus(0.2)
       console.log("Sending current process status")
       socket.emit('current-status', CURRENT_STATUS)
 
@@ -206,7 +218,6 @@ io.of('/api/job')
 
   socket.on("request-progress", (data) => {
     //data = {"job_id":1}
-
 
     console.log("Progress requested for job : " + data.job_id);
     socket.emit('current-status', CURRENT_STATUS);
