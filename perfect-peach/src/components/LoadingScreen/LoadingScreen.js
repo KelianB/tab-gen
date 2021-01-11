@@ -5,7 +5,8 @@ import { connect } from 'react-redux';
 import { toast } from 'react-toastify';
 import socketIOClient from 'socket.io-client'
 import {debounce} from 'lodash'
-
+import { LinearProgress, CircularProgress } from '@material-ui/core';
+import './LoadingScreen.css'
 const sleep = require('util').promisify(setTimeout)
 
 const TIMEOUT = 1000 // Time between the response of the API and the next request to check on the processing state
@@ -39,6 +40,11 @@ class LoadingScreen extends (React.Component) {
             tab_processing: true,
             is_over: false,
             result_url:null,
+            steps: [],
+            current_step: 1,
+            progress : 0,
+            step_progress: 0,
+
         }
     }
 
@@ -63,8 +69,6 @@ class LoadingScreen extends (React.Component) {
         const requestProgress = () => socket.emit('request-progress', {job_id: this.props.job_id})
         const debounceEmission = debounce(requestProgress, TIMEOUT )
 
-        
-
         socket.on('current-status', (data) => {
             console.log("LOADING CURRENT STATUS RECEIVED : ")
             console.log(data)
@@ -72,28 +76,72 @@ class LoadingScreen extends (React.Component) {
             debounceEmission()
 
             if (data.progress.done == false) {
+              
                 console.log("LOADING - Processing is still going")
+                this.setState({progress:data.progress.total_progress,steps:data.steps, current_step:data.progress.step, step_progress:data.progress.step_progress})
+
+
             
             } else {
                 console.log("LOADING - Processing is over, the result has been received")
-                this.setState({...this.state, tab_processing:false, is_over:true, result_url: data.result_url})
-                socket.disconnect()
-                this.sendResultRequest()
+                this.setState({progress:data.progress.total_progress,steps:data.steps, current_step:data.progress.step, step_progress:data.progress.step_progress, tab_processing:false, is_over:true, result_url: data.result_url}, 
+                  () => socket.disconnect())
             }
         });
+
+
+
     }
 
 
     render () {
+        const progress = this.state.progress
+        const current_step_progress = this.state.step_progress
+        const steps = this.state.steps
+        const current_step = this.state.current_step
 
-        if (this.state.tab_processing) {
-            return (<div>Loading</div>)
-        } else {
-            return (
-                    <div>Done</div>
-            )
+        const step_progress = (step) => {
+          if (step === steps[current_step - 1]) {return current_step_progress}
+          else if (steps.indexOf(step) > current_step - 1) return 0
+          return 1
+        } 
+
+
+
+
+            return(
+                <div className="progress-container">
+                    <div className="progress-bars">
+
+                     <label className= "progress-title"> MAIN PROGRESS ({Math.round(progress*100)} %) </label>
+
+                    <LinearProgress variant="determinate" value={progress*100} color="secondary" />
+
+
+                      {steps.map( (step) => 
+                      <div>
+                        <label className= "progress-title"> {step} ({Math.round(step_progress(step)*100)} %) </label>
+
+                        <LinearProgress variant="determinate" value={step_progress(step)*100} color="primary" />
+                      </div>
+                      )}
+                    </div>
+                    
+                    <div className="progress-info">
+                      <div className="progress-done">
+
+                        <button type="button" class="btn upload-button btn-block" disabled={this.state.result_url === null} onClick={this.sendResultRequest}> RESULTS </button>
+
+
+                      </div>
+                    </div>
+
+
+                    
+                </div>
+              )
         }
-    }
+    
 }
 
 
