@@ -7,11 +7,11 @@ import socketIOClient from 'socket.io-client'
 import {debounce} from 'lodash'
 import { LinearProgress, CircularProgress } from '@material-ui/core';
 import './LoadingScreen.css'
-const sleep = require('util').promisify(setTimeout)
+//const sleep = require('util').promisify(setTimeout)
 
-const TIMEOUT = 1000 // Time between the response of the API and the next request to check on the processing state
-const URL = "http://localhost:8000"
-const SOCKET_ENDPOINT = "/api/job"
+
+import {BACK_URL,WS_END_POINT, DEBOUNCE_TIMEOUT} from '../../config.js'
+
 
 /**
  * L'idée de ce composant est d'afficher un écran de chargement pendant le traitement du fichier audio par le modèle
@@ -64,10 +64,10 @@ class LoadingScreen extends (React.Component) {
 
     componentDidMount = () => {
 
-        const socket = socketIOClient(URL + SOCKET_ENDPOINT, {transports: ['websocket']});
+        const socket = socketIOClient(BACK_URL + WS_END_POINT, {transports: ['websocket']});
 
         const requestProgress = () => socket.emit('request-progress', {job_id: this.props.job_id})
-        const debounceEmission = debounce(requestProgress, TIMEOUT )
+        const debounceEmission = debounce(requestProgress, DEBOUNCE_TIMEOUT )
 
         socket.on('current-status', (data) => {
             console.log("LOADING CURRENT STATUS RECEIVED : ")

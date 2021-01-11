@@ -14,8 +14,7 @@ import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ToolTip from '@material-ui/core/Tooltip'
 
-const URL = "http://localhost:8000";
-const MAX_SIZE = 4 * (10 ** 6); // Max size in bytes (?)
+import {BACK_URL, UPLOAD_MAX_SIZE, POST_FILE_UPLOAD_ROUTE, GET_VERSIONS_ROUTE} from '../../config.js'
 
 
 
@@ -35,7 +34,7 @@ class FileUploader extends React.Component {
     // Upload related methods
 
     uploadURL = () => {
-        return URL + `/api/job/`
+        return BACK_URL + POST_FILE_UPLOAD_ROUTE
     }
 
     onChangeHandler = event => {
@@ -71,7 +70,7 @@ class FileUploader extends React.Component {
 
     checkFileSize = event => {
         let file = event.target.files[0]
-        let size = MAX_SIZE;
+        let size = UPLOAD_MAX_SIZE;
         let err = "";
 
         if (file.size > size) {
@@ -132,7 +131,7 @@ class FileUploader extends React.Component {
     // Version related methods
 
     versionURL = () => {
-        return URL + '/api/versions'
+        return BACK_URL + GET_VERSIONS_ROUTE
     }
 
     handleVersion = (event, newModel) => {
