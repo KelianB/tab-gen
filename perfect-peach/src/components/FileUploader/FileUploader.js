@@ -7,14 +7,14 @@ import 'bootstrap/dist/css/bootstrap.css';
 
 import { connect } from 'react-redux';
 import { uploadIsOverAction,processingIsOverAction } from '../ReduxStuff/Actions'
-
-
+import JobRetriever from './JobRetriever'
 
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ToolTip from '@material-ui/core/Tooltip'
 
 import {BACK_URL, UPLOAD_MAX_SIZE, POST_FILE_UPLOAD_ROUTE, GET_VERSIONS_ROUTE} from '../../config.js'
+
 
 
 
@@ -110,12 +110,10 @@ class FileUploader extends React.Component {
 
             const job_id = res.data.job_ws
 
+            
+            this.addJobToLocalStorage(job_id);
             this.props.uploadIsOverAction(job_id);
 
-
-            
-            //const score = res.data;
-            //this.props.processingIsOverAction(score);
 
         }).catch(err => {
             toast.error('upload fail')
@@ -125,6 +123,21 @@ class FileUploader extends React.Component {
 
 
 
+    }
+
+    addJobToLocalStorage = job_id => {
+        if (job_id) {
+            let previousJobs = localStorage.getItem("jobs")
+            if (previousJobs == null) {
+                previousJobs = []
+            } else {
+                previousJobs = JSON.parse(previousJobs)
+            }
+            previousJobs.push(job_id)
+            localStorage.setItem("jobs", JSON.stringify(previousJobs))
+        } else {
+            console.log("ERROR - Null Job ID")
+        }
     }
 
     // Version related methods
@@ -193,6 +206,10 @@ class FileUploader extends React.Component {
 
                 <button type="button" class="btn upload-button btn-block" disabled={this.state.buttonDisabled} onClick={this.onClickHandler}> UPLOAD </button>
 
+
+                <div class="form-group">
+                    <JobRetriever />
+                </div>
 
             </div>
         )

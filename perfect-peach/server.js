@@ -152,7 +152,9 @@ app
         return res.status(200).json({ job_ws: mock_job_id });
       } else {
         console.log("POST - TRAITEMENT DEJA EN COURS");
-        res.status(200).send("Traitement déjà en cours");
+        // res.status(200).send("Traitement déjà en cours");
+        const mock_job_id = 1;
+        return res.status(200).json({ job_ws: mock_job_id });
       }
     });
   })
