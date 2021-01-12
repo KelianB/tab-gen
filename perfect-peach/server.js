@@ -179,11 +179,23 @@ app
 
 const updateStatus = (x) => {
   CURRENT_PROGRESS = {...CURRENT_PROGRESS, step_progress:CURRENT_PROGRESS.step_progress+x, total_progress:CURRENT_PROGRESS.total_progress+x/3}
+
   if (CURRENT_PROGRESS.step_progress > 1.0 && CURRENT_PROGRESS.step < CURRENT_PROGRESS.max_step) {
     CURRENT_PROGRESS = {...CURRENT_PROGRESS, step_progress:x, step:CURRENT_PROGRESS.step+1}
   } 
 
-  CURRENT_STATUS = {...CURRENT_STATUS, progress: CURRENT_PROGRESS}
+  if (CURRENT_PROGRESS.step_progress >= 1.0 && CURRENT_PROGRESS.step === CURRENT_PROGRESS.max_step) {
+    CURRENT_PROGRESS = {
+      step: 3,
+      max_step: 3,
+      step_progress: 1,
+      total_progress: 1,
+      done: true,
+    };
+    etat = true;
+  }
+
+  CURRENT_STATUS = {...CURRENT_STATUS,result_url:URL + "/api/job/" + CURRENT_STATUS.job_id + "/result", progress: CURRENT_PROGRESS}
 }
 
 let requestTrack = []
