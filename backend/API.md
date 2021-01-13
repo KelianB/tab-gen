@@ -76,22 +76,6 @@ Réponse possible: un id correspond au traitement ("job_id")
 }
 ```
 
-## **GET** /api/job/:job_id
-
----
-
-Envoie le lien du WebSocket lié au job spécifié en paramètre
-
-### **Example de réponse**
-
-200 si le job existe (qu'il soit en cours ou terminé), 404 sinon
-
-```json
-{
-  "job_ws": "ws://localhost/job/5"
-}
-```
-
 ## **WebSocket** /api/job
 ---
 

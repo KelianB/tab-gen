@@ -9,7 +9,7 @@
     "data_loader": {
         "type": "GuitarSetDataLoader",
         "args":{
-            "data_dir": "data/guitar-set/processed",
+            "data_dir": "data/guitar-set/",
             "batch_size": 256,
             "shuffle": true,
             "validation_split": 0.05,

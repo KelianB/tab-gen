@@ -24,14 +24,23 @@ def get_annotation_files(n, annotations_dir):
             a list of parsed jams files.
     """
 
+    print("0.0%", end="\r")
+
     # Get the files in the directory and filter for .jams
-    files = filter(lambda file: file[-5:] == ".jams", os.listdir(annotations_dir))
+    files = list(filter(lambda file: file[-5:] == ".jams", os.listdir(annotations_dir)))
     
-    # Keep the first n files
-    files = list(files)[0:n]
+    # Keep the first n files and map to their complete location
+    files = list(map(lambda file: os.path.join(annotations_dir, file), files[0:n]))
     
+    loaded = [] 
     # Load the files using the jams library
-    return list(map(lambda file: jams.load(os.path.join(annotations_dir, file)), files))
+    N = len(files)
+    for i,path in enumerate(files):
+        loaded.append(jams.load(path))
+        print("{0:.1f}".format(100 * i / N) + "%\t", end="\r")
+    print("\t" * 5, end="\r")
+
+    return loaded
 
 
 def compute_overlap_frequency(jam, segment_length):

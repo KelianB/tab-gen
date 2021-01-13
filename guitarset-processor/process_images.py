@@ -4,11 +4,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import librosa
 import librosa.display
+from config import *
 
-AUDIO_SAMPLE_RATE = 44100 # Hz
-
-# Whether or not to replace the pre-existing images
-OVERWRITE_IMAGES = False 
 
 # Turn matplotlib's interactive mode off
 plt.ioff()
@@ -72,7 +69,7 @@ def save_image(cqt, output_path):
     """
 
     plt.close("all")
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(1.6, 1.2))
     plt.subplots_adjust(top = 1, bottom = 0, right = 1, left = 0, hspace = 0, wspace = 0)
     img = librosa.display.specshow(cqt, sr=AUDIO_SAMPLE_RATE, ax=ax, cmap="gray_r")
     plt.savefig(output_path)
@@ -96,11 +93,11 @@ def create_segmented_inputs(jam, segment_length, raw_dirs, processed_dir):
     num_segments -= 1 # Remove the last segment, which is likely to have incomplete audio data
 
     # Iterate over files (raw, then overlay)
-    for j, audio_file in audio_files:
+    for j, audio_file in enumerate(audio_files):
         # Iterate over segments
         for i in range(num_segments):
-            filename = jam.file_metadata.title + "_" + str(j) "_" + str(i) + ".png"
-            output_file = os.path.join(processed_dir, filename)
+            relative_loc = output_image_location(jam.file_metadata.title, i, j)
+            output_file = os.path.join(processed_dir, relative_loc)
 
             # Compute and save the spectrogram only if needed
             if OVERWRITE_IMAGES or not os.path.isfile(output_file):

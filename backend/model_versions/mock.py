@@ -1,5 +1,8 @@
 class MockModel():
 
+    def id(self):
+        return "0"
+
     def name(self):
         return "MockModel"
         
@@ -8,7 +11,4 @@ class MockModel():
         
     def steps(self):
         return [];
-        
-    def processFile(self, _file):
-        print("Mock processing launched : " + _file.name)
-        
+

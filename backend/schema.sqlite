@@ -1,0 +1,7 @@
+CREATE TABLE "jobs" (
+	"job_id"	INTEGER NOT NULL,
+	"version_id"	TEXT NOT NULL,
+	"input"	TEXT NOT NULL,
+	"output"	TEXT,
+	PRIMARY KEY("job_id")
+)
