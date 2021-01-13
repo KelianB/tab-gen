@@ -4,9 +4,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { versionHasBeenSelected } from '../ReduxStuff/Actions'
 
-import JobRetriever from '../FileUploader/JobRetriever'
-import AudioRecorder from '../AudioRecorder'
-import FileUploader from '../FileUploader/FileUploader'
+import JobRetriever from './JobRetriever/JobRetriever'
+import AudioRecorder from './AudioRecorder/AudioRecorder'
+import FileUploader from './FileUploader/FileUploader'
 
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';

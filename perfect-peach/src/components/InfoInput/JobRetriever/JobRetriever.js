@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux';
-import { uploadIsOverAction } from '../ReduxStuff/Actions'
+import { uploadIsOverAction } from '../../ReduxStuff/Actions'
 
 
 class JobRetriever extends React.Component {

@@ -5,9 +5,9 @@ import { Progress } from 'reactstrap';
 import { getAudioStream, exportBuffer } from './utilities/audio'
 
 import { connect } from 'react-redux';
-import { uploadIsOverAction } from './ReduxStuff/Actions'
+import { uploadIsOverAction } from '../../ReduxStuff/Actions'
 
-import {BACK_URL, POST_FILE_UPLOAD_ROUTE} from '../config.js'
+import {BACK_URL, POST_FILE_UPLOAD_ROUTE} from '../../../config.js'
 const URL = BACK_URL + POST_FILE_UPLOAD_ROUTE;
 
 class AudioRecorder extends React.Component {

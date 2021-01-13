@@ -6,9 +6,9 @@ import 'react-toastify/dist/ReactToastify.css';
 //import 'bootstrap/dist/css/bootstrap.css';
 
 import { connect } from 'react-redux';
-import { uploadIsOverAction } from '../ReduxStuff/Actions'
+import { uploadIsOverAction } from '../../ReduxStuff/Actions'
 
-import {BACK_URL, UPLOAD_MAX_SIZE, POST_FILE_UPLOAD_ROUTE, GET_VERSIONS_ROUTE} from '../../config.js'
+import {BACK_URL, UPLOAD_MAX_SIZE, POST_FILE_UPLOAD_ROUTE} from '../../../config.js'
 
 
 
