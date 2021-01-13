@@ -89,4 +89,4 @@ def generate_chord(chord):
 
 if __name__ == "__main__":
 
-	generate_atex(test)
+	generate_atex(test_2)
