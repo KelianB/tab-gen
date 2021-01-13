@@ -3,15 +3,10 @@ import axios from 'axios';
 import { Progress } from 'reactstrap';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import 'bootstrap/dist/css/bootstrap.css';
+//import 'bootstrap/dist/css/bootstrap.css';
 
 import { connect } from 'react-redux';
-import { uploadIsOverAction,processingIsOverAction } from '../ReduxStuff/Actions'
-import JobRetriever from './JobRetriever'
-
-import ToggleButton from '@material-ui/lab/ToggleButton';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import ToolTip from '@material-ui/core/Tooltip'
+import { uploadIsOverAction } from '../ReduxStuff/Actions'
 
 import {BACK_URL, UPLOAD_MAX_SIZE, POST_FILE_UPLOAD_ROUTE, GET_VERSIONS_ROUTE} from '../../config.js'
 
@@ -21,13 +16,12 @@ import {BACK_URL, UPLOAD_MAX_SIZE, POST_FILE_UPLOAD_ROUTE, GET_VERSIONS_ROUTE} f
 
 
 class FileUploader extends React.Component {
+    // Expected props version_id given through the Store
     constructor(props) {
         super(props);
         this.state = {
             selectedFile: null,
-            buttonDisabled: true,
-            models: [],
-            selectedModel: null,
+            loaded: null,
         }
     }
     // Upload related methods
@@ -39,10 +33,10 @@ class FileUploader extends React.Component {
     onChangeHandler = event => {
         console.log(event.target.files[0]);
         if (this.checkMimeType(event) && this.checkFileSize(event)) {
+
             this.setState({
                 selectedFile: event.target.files[0],
                 loaded: 0,
-                buttonDisabled: (this.state.selectedModel != null) ? false : true,
             })
         }
 
@@ -89,7 +83,7 @@ class FileUploader extends React.Component {
 
     onClickHandler = () => {
         const data = new FormData();
-        const params = {"version_id":this.state.selectedModel}
+        const params = {"version_id":this.props.version_id}
 
         data.append('file', this.state.selectedFile)
 
@@ -111,7 +105,6 @@ class FileUploader extends React.Component {
             const job_id = res.data.job_ws
 
             
-            this.addJobToLocalStorage(job_id);
             this.props.uploadIsOverAction(job_id);
 
 
@@ -125,93 +118,31 @@ class FileUploader extends React.Component {
 
     }
 
-    addJobToLocalStorage = job_id => {
-        if (job_id) {
-            let previousJobs = localStorage.getItem("jobs")
-            if (previousJobs == null) {
-                previousJobs = []
-            } else {
-                previousJobs = JSON.parse(previousJobs)
-            }
-            previousJobs.push(job_id)
-            localStorage.setItem("jobs", JSON.stringify(previousJobs))
-        } else {
-            console.log("ERROR - Null Job ID")
-        }
-    }
-
-    // Version related methods
-
-    versionURL = () => {
-        return BACK_URL + GET_VERSIONS_ROUTE
-    }
-
-    handleVersion = (event, newModel) => {
-        this.setState({selectedModel: newModel, buttonDisabled:(this.state.selectedFile != null) ? false: true}, () => console.log(this.state.selectedModel))
-    }
-
-    getModelVersions = () => {
-
-        fetch( this.versionURL() )
-         .then(res => res.json())
-         .then(models => {this.setState({models:models})})
-    }
-
-    componentDidMount = () => {
-        this.getModelVersions()
-    }
-
-    
-
     render() {
-        const WrappedToolTip = (props,ref) => <ToolTip {...props} />;
-
-        const { models } = this.state;
 
 
         return (
 
-
-            <div class="container">
-
-                <div class="form-group">
-                    <label className= "upload-title"> SELECT THE MODEL </label>
-
-                    <ToggleButtonGroup value = {this.state.selectedModel} exclusive onChange = {this.handleVersion} id="o" aria-label = "mdr"  >
-
-                        { 
-                            models.map((model) => 
-                            // <WrappedToolTip title = {model.description} key = {model.id}>
-                                    <ToggleButton value = {model.id} >
-                                        {model.name}
-                                    </ToggleButton>
-
-                                // </WrappedToolTip>
-                                )
-                        }
-
-                    </ToggleButtonGroup>
-                </div>
-
+            <div>
+                <ToastContainer />
 
                 <div class="form-group files">
                     <label className= "upload-title"> UPLOAD YOUR FILE </label>
                     <input type="file" name="file" onChange={this.onChangeHandler} />
                 </div>
 
+
+                <div class="form-group"> 
+                    <button type="button" class="btn upload-button btn-block" disabled={this.props.version_id == null || this.state.selectedFile == null} onClick={this.onClickHandler}> UPLOAD </button>
+                </div>
+
+                { this.state.loaded > 0 &&
                 <div class="form-group">
-                    <ToastContainer />
                     <Progress max="100" color="success" value={this.state.loaded} >{Math.round(this.state.loaded, 2)}%</Progress>
                 </div>
+                }
 
-                <button type="button" class="btn upload-button btn-block" disabled={this.state.buttonDisabled} onClick={this.onClickHandler}> UPLOAD </button>
-
-
-                <div class="form-group">
-                    <JobRetriever />
                 </div>
-
-            </div>
         )
     }
 }
@@ -221,4 +152,9 @@ class FileUploader extends React.Component {
  * that FileUploader can dispatch action by using for instance
  * 'this.props.uploadIsOverAction'
  */
-export default connect(null, {uploadIsOverAction,processingIsOverAction})(FileUploader)
+
+const mapStateToProps =  store =>({
+    version_id: store.peachReducer.version_id
+  })
+
+export default connect(mapStateToProps, {uploadIsOverAction})(FileUploader)

@@ -1,7 +1,7 @@
 import './App.css';
 import React, {useState, useEffect} from 'react';
-import FileUploader from './components/FileUploader/FileUploader'
 import './components/FileUploader/FileUploader.css'
+import InfoInput from './components/InfoInput/InfoInput'
 import { TabRenderer } from './components/TabRenderer/TabRenderer'
 import PPLogo from "./ressource/logo.svg"
 import LoadingScreen from './components/LoadingScreen/LoadingScreen'
@@ -24,7 +24,7 @@ class App extends React.Component {
         <div class="row fileupload">
           <div class="col"></div>
           <div class="col-6"> 
-            <FileUploader />
+            <InfoInput />
           </div>
           <div class="col">  </div>
         </div>
@@ -68,6 +68,7 @@ class App extends React.Component {
 
 
             </div>
+
           </div>
       );
 
