@@ -1,6 +1,6 @@
 import React from 'react';
 // import 'bootstrap/dist/css/bootstrap.css';
-
+import './InfoInput.css'
 import { connect } from 'react-redux';
 import { versionHasBeenSelected } from '../ReduxStuff/Actions'
 
@@ -22,8 +22,9 @@ class InfoInput extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            models: [],
-            selectedModel: null,
+            models: [], // [{name:__, description:___, id:___},]
+            selectedModel: null, //version_id
+            selectedModelDescription: null,
             selectedInputMethod:0,
         }
     }
@@ -35,10 +36,25 @@ class InfoInput extends React.Component {
         return BACK_URL + GET_VERSIONS_ROUTE
     }
 
+    findDescriptionOfSelectedModel = () => {
+        const { models, selectedModel } = this.state
+        if (models.length != 0 && selectedModel != null) {
+
+            const desc = models.filter(model => model.id === selectedModel)[0].description
+            this.setState({selectedModelDescription: desc.toUpperCase()})
+        } else if (selectedModel == null) {
+            this.setState({selectedModelDescription:null})
+        }
+    }
+
     handleVersion = (event, newModel) => {
 
         this.props.versionHasBeenSelected(newModel);
-        this.setState({selectedModel: newModel}, () => console.log(this.state.selectedModel))
+        this.setState({selectedModel: newModel}, 
+            () => {
+                console.log(this.state.selectedModel)
+                this.findDescriptionOfSelectedModel()
+            })
     }
 
     getModelVersions = () => {
@@ -58,9 +74,11 @@ class InfoInput extends React.Component {
         this.getModelVersions()
     }
 
+
+
     render() {
 
-        const { models,selectedInputMethod } = this.state;
+        const { models,selectedInputMethod, selectedModelDescription } = this.state;
         const inputMethods = [{name:"Upload", id:"0"}, {name:"Record", id:"1"}]
 
 
@@ -68,7 +86,9 @@ class InfoInput extends React.Component {
 
 
             <div class="container">
-
+                {
+                    models.length != 0 &&
+                
                 <div class="form-group">
                     <label className= "upload-title"> SELECT THE MODEL </label>
                     <div>
@@ -85,7 +105,15 @@ class InfoInput extends React.Component {
 
                         </ToggleButtonGroup>
                     </div>
+                    
+                    {
+                        selectedModelDescription != null &&
+                        <label className= "desc-label">
+                            {'>'} {selectedModelDescription}
+                        </label>
+                    }
                 </div>
+                }
 
                 <div class="form-group">
                     <label className= "upload-title"> SELECT YOUR INPUT METHOD </label>
