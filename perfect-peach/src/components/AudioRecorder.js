@@ -1,6 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 import RecorderJS from 'recorder-js'
+import { Progress } from 'reactstrap';
 import { getAudioStream, exportBuffer } from './utilities/audio'
 
 import { connect } from 'react-redux';
@@ -57,7 +58,7 @@ class AudioRecorder extends React.Component {
         const { buffer } = await recorder.stop();
         const audio = exportBuffer(buffer[0]);
 
-        this.setState({recorded_audio:audio, buttonDisabled:false})
+        this.setState({recorded_audio:audio, buttonDisabled:false, loaded:0})
 
 
 
@@ -81,9 +82,18 @@ class AudioRecorder extends React.Component {
     onClickHandler = () => {
         
         const data = new FormData();
+        const params = {"version_id": this.props.version_id}
+
         data.append('file', this.state.recorded_audio)
 
-        axios.post(URL, data, {}).then(res => {
+
+        axios.post(URL, data, {params:params}, {
+
+            onUploadProgress: ProgressEvent => {
+                this.setState({ loaded: (ProgressEvent.loaded / ProgressEvent.total * 100), 
+            })}  
+                 
+        }).then(res => {
             console.log("Upload Status : " + res.statusText);
             this.setState({
                 recording: false,
@@ -93,7 +103,6 @@ class AudioRecorder extends React.Component {
 
             const job_id = res.data.job_ws
 
-            this.addJobToLocalStorage(job_id);
             this.props.uploadIsOverAction(job_id);
 
         }).catch(err => {
@@ -120,7 +129,11 @@ class AudioRecorder extends React.Component {
                     {recording ? 'Stop Recording' : 'Start Recording'}
                 </button >
 
-                <button type="button" class="btn upload-button btn-block" disabled={this.state.buttonDisabled} onClick={this.onClickHandler}> UPLOAD </button>
+                <div class="form-group">
+                    <Progress max="100" color="success" value={this.state.loaded} >{Math.round(this.state.loaded, 2)}%</Progress>
+                </div>
+
+                <button type="button" class="btn upload-button btn-block" disabled={this.props.version_id == null || this.state.recorded_audio == null} onClick={this.onClickHandler}> UPLOAD </button>
 
 
             </div>
@@ -137,4 +150,9 @@ class AudioRecorder extends React.Component {
  * that AudioRecorder can dispatch action by using for instance
  * 'this.props.uploadIsOverAction'
  */
-export default connect(null, {uploadIsOverAction})(AudioRecorder);
+
+const mapStateToProps =  store =>({
+    version_id: store.peachReducer.version_id
+  })
+
+export default connect(mapStateToProps, {uploadIsOverAction})(AudioRecorder)
