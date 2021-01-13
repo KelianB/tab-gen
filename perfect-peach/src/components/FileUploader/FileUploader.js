@@ -8,6 +8,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import { connect } from 'react-redux';
 import { uploadIsOverAction,processingIsOverAction } from '../ReduxStuff/Actions'
 import JobRetriever from './JobRetriever'
+import AudioRecorder from '../AudioRecorder'
 
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
@@ -28,6 +29,7 @@ class FileUploader extends React.Component {
             buttonDisabled: true,
             models: [],
             selectedModel: null,
+            selectedInputMethod:0,
         }
     }
     // Upload related methods
@@ -157,16 +159,21 @@ class FileUploader extends React.Component {
          .then(models => {this.setState({models:models})})
     }
 
+    // Input method related methods
+
+    handleInputMethod = (event, newMethod) => {
+        this.setState({selectedInputMethod: newMethod})
+    }
+
     componentDidMount = () => {
         this.getModelVersions()
     }
 
-    
-
     render() {
         const WrappedToolTip = (props,ref) => <ToolTip {...props} />;
 
-        const { models } = this.state;
+        const { models,selectedInputMethod } = this.state;
+        const inputMethods = [{name:"Upload", id:"0"}, {name:"Record", id:"1"}]
 
 
         return (
@@ -176,36 +183,68 @@ class FileUploader extends React.Component {
 
                 <div class="form-group">
                     <label className= "upload-title"> SELECT THE MODEL </label>
+                    <div>
+                        <ToggleButtonGroup value = {this.state.selectedModel} exclusive onChange = {this.handleVersion} id="o" aria-label = "mdr"  >
 
-                    <ToggleButtonGroup value = {this.state.selectedModel} exclusive onChange = {this.handleVersion} id="o" aria-label = "mdr"  >
+                            { 
+                                models.map((model) => 
+                                // <WrappedToolTip title = {model.description} key = {model.id}>
+                                        <ToggleButton value = {model.id} >
+                                            {model.name}
+                                        </ToggleButton>
 
-                        { 
-                            models.map((model) => 
-                            // <WrappedToolTip title = {model.description} key = {model.id}>
-                                    <ToggleButton value = {model.id} >
-                                        {model.name}
-                                    </ToggleButton>
+                                    // </WrappedToolTip>
+                                    )
+                            }
 
-                                // </WrappedToolTip>
-                                )
-                        }
-
-                    </ToggleButtonGroup>
-                </div>
-
-
-                <div class="form-group files">
-                    <label className= "upload-title"> UPLOAD YOUR FILE </label>
-                    <input type="file" name="file" onChange={this.onChangeHandler} />
+                        </ToggleButtonGroup>
+                    </div>
                 </div>
 
                 <div class="form-group">
-                    <ToastContainer />
-                    <Progress max="100" color="success" value={this.state.loaded} >{Math.round(this.state.loaded, 2)}%</Progress>
+                    <label className= "upload-title"> SELECT YOUR INPUT METHOD </label>
+                    <div>
+                        <ToggleButtonGroup value = {this.state.selectedInputMethod} exclusive onChange = {this.handleInputMethod} id="m" aria-label = "lol"  >
+
+                            { 
+                                inputMethods.map((method) => 
+                                        <ToggleButton value = {method.id} >
+                                            {method.name}
+                                        </ToggleButton>
+                                    )
+                            }
+
+                        </ToggleButtonGroup>
+                    </div>
                 </div>
 
-                <button type="button" class="btn upload-button btn-block" disabled={this.state.buttonDisabled} onClick={this.onClickHandler}> UPLOAD </button>
+                {
+                    selectedInputMethod == 0 &&
+                    <div>
+                        <div class="form-group files">
+                            <label className= "upload-title"> UPLOAD YOUR FILE </label>
+                            <input type="file" name="file" onChange={this.onChangeHandler} />
+                        </div>
+                        
+                        <div class="form-group">
+                            <ToastContainer />
+                            <Progress max="100" color="success" value={this.state.loaded} >{Math.round(this.state.loaded, 2)}%</Progress>
+                        </div>
 
+                        <button type="button" class="btn upload-button btn-block" disabled={this.state.buttonDisabled} onClick={this.onClickHandler}> UPLOAD </button>
+                    </div>
+                }
+
+                {
+                    selectedInputMethod == 1 &&
+                    <div class="form-group">
+                        <label className= "upload-title"> RECORD WITH YOUR MICROPHONE  </label>
+                        <AudioRecorder/>
+                    </div>
+                }
+
+
+                
 
                 <div class="form-group">
                     <JobRetriever />
