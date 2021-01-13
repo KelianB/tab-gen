@@ -1,7 +1,7 @@
 from .mock import MockModel
 
 versions = {
-    0: MockModel()
+    '0': MockModel()
 }
 
 class Step():

@@ -1,5 +1,8 @@
 class MockModel():
 
+    def id(self):
+        return "0"
+
     def name(self):
         return "MockModel"
         
