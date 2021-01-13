@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Progress } from 'reactstrap';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import 'bootstrap/dist/css/bootstrap.css';
+//import 'bootstrap/dist/css/bootstrap.css';
 
 import { connect } from 'react-redux';
 import { uploadIsOverAction } from '../ReduxStuff/Actions'
@@ -21,6 +21,7 @@ class FileUploader extends React.Component {
         super(props);
         this.state = {
             selectedFile: null,
+            loaded: null,
         }
     }
     // Upload related methods
@@ -123,18 +124,23 @@ class FileUploader extends React.Component {
         return (
 
             <div>
+                <ToastContainer />
 
                 <div class="form-group files">
                     <label className= "upload-title"> UPLOAD YOUR FILE </label>
                     <input type="file" name="file" onChange={this.onChangeHandler} />
                 </div>
-                        
-                <div class="form-group">
-                    <ToastContainer />
-                    <Progress max="100" color="success" value={this.state.loaded} >{Math.round(this.state.loaded, 2)}%</Progress>
+
+
+                <div class="form-group"> 
+                    <button type="button" class="btn upload-button btn-block" disabled={this.props.version_id == null || this.state.selectedFile == null} onClick={this.onClickHandler}> UPLOAD </button>
                 </div>
 
-                <button type="button" class="btn upload-button btn-block" disabled={this.props.version_id == null || this.state.selectedFile == null} onClick={this.onClickHandler}> UPLOAD </button>
+                { this.state.loaded > 0 &&
+                <div class="form-group">
+                    <Progress max="100" color="success" value={this.state.loaded} >{Math.round(this.state.loaded, 2)}%</Progress>
+                </div>
+                }
 
                 </div>
         )

@@ -1,7 +1,6 @@
 import './App.css';
 import React, {useState, useEffect} from 'react';
 import './components/FileUploader/FileUploader.css'
-import './components/InfoInput/InfoInput.css'
 import InfoInput from './components/InfoInput/InfoInput'
 import { TabRenderer } from './components/TabRenderer/TabRenderer'
 import PPLogo from "./ressource/logo.svg"

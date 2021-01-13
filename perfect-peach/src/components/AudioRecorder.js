@@ -79,7 +79,7 @@ class AudioRecorder extends React.Component {
         }
     }
 
-    onClickHandler = () => {
+    onUploadClickHandler = () => {
         
         const data = new FormData();
         const params = {"version_id": this.props.version_id}
@@ -112,7 +112,6 @@ class AudioRecorder extends React.Component {
     }
 
 
-
     render() {
 
         const { recording, stream } = this.state;
@@ -124,18 +123,21 @@ class AudioRecorder extends React.Component {
 
         return (
             <div>
-                <button class="btn upload-button btn-block" onClick={() => recording ? this.stopRecording() : this.startRecording()}>
 
-                    {recording ? 'Stop Recording' : 'Start Recording'}
-                </button >
-
-                <div class="form-group">
-                    <Progress max="100" color="success" value={this.state.loaded} >{Math.round(this.state.loaded, 2)}%</Progress>
+                <div class="form-group"> 
+                    <button class="btn upload-button btn-block" disabled={this.state.recorded_audio != null} onClick={() => recording ? this.stopRecording() : this.startRecording()}>
+                        {recording ? 'Stop Recording' : 'Start Recording'}
+                    </button >  
                 </div>
 
-                <button type="button" class="btn upload-button btn-block" disabled={this.props.version_id == null || this.state.recorded_audio == null} onClick={this.onClickHandler}> UPLOAD </button>
 
+                <button type="button" class="btn upload-button btn-block" disabled={this.props.version_id == null || this.state.recorded_audio == null} onClick={this.onUploadClickHandler}> UPLOAD </button>
 
+                {this.state.loaded > 0 &&
+                    <div class="form-group">
+                        <Progress max="100" color="success" value={this.state.loaded} >{Math.round(this.state.loaded, 2)}%</Progress>
+                    </div>
+                }
             </div>
 
 

@@ -1,6 +1,5 @@
 import React from 'react';
-import 'bootstrap/dist/css/bootstrap.css';
-import './InfoInput.css'
+// import 'bootstrap/dist/css/bootstrap.css';
 
 import { connect } from 'react-redux';
 import { versionHasBeenSelected } from '../ReduxStuff/Actions'
