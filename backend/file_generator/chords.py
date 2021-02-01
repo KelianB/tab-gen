@@ -138,7 +138,7 @@ def economy_score2(chord):
 	if len(frets_played) == 0:
 		return score
 	for finger in frets_played:
-		score += 1 + (abs(frets_played[0] - finger))
+		score += 1 + (abs(frets_played[0] - finger)) + finger
 
 
 	return score
@@ -157,6 +157,11 @@ def show_scores(chord):
 		toString += str(i) + ", score : " + str(economy_score2(i)) + '\n'
 
 	return toString
+
+def all_possibilities(chord):
+	poss = recompose(contraintes(chord))
+
+	return poss
 
 
 def bestChord(chord):
@@ -177,14 +182,13 @@ def bestChords(allChords):
 
 if __name__ == "__main__":
 
-	testeur  = [0, 0, 0, 0, 0, 1]  #Une note seule
+	testeur  = [0, 0, 3, 0, 0, 0]  #Une note seule
 	testeur2 = [0, 1, 3, 3, 2, 1]  #Exemple d'accord jouable (LA mineur)
 	testeur3 = [6, 8, 8, 6, 6, 0]  #Exemple d'entrée (à améliorer)
 	testeur4 = [0, 4, 3, 1, 2, 1]  #Accord DO
 
 	
-	print(show_scores(testeur2))
-	
+	print(all_possibilities(testeur2))	
 
 
 
