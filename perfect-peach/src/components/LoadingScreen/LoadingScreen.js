@@ -120,7 +120,7 @@ class LoadingScreen extends (React.Component) {
 
 
                       {steps.map( (step) => 
-                      <div>
+                      <div key={step} >
                         <label className= "progress-title"> {step} ({Math.round(step_progress(step)*100)} %) </label>
 
                         <LinearProgress variant="determinate" value={step_progress(step)*100} color="primary" />
