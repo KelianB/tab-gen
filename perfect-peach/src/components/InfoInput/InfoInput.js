@@ -85,11 +85,11 @@ class InfoInput extends React.Component {
         return (
 
 
-            <div class="container">
+            <div className="container">
                 {
                     models.length != 0 &&
                 
-                <div class="form-group">
+                <div className="form-group">
                     <label className= "upload-title"> SELECT THE MODEL </label>
                     <div>
                         <ToggleButtonGroup value = {this.state.selectedModel} exclusive onChange = {this.handleVersion} id="o" aria-label = "mdr"  >
@@ -115,7 +115,7 @@ class InfoInput extends React.Component {
                 </div>
                 }
 
-                <div class="form-group">
+                <div className="form-group">
                     <label className= "upload-title"> SELECT YOUR INPUT METHOD </label>
                     <div>
                         <ToggleButtonGroup value = {this.state.selectedInputMethod} exclusive onChange = {this.handleInputMethod} id="m" aria-label = "lol"  >
@@ -139,13 +139,13 @@ class InfoInput extends React.Component {
 
                 {
                     selectedInputMethod == 1 &&
-                    <div class="form-group">
+                    <div className="form-group">
                         <label className= "upload-title"> RECORD WITH YOUR MICROPHONE  </label>
                         <AudioRecorder />
                     </div>
                 }
 
-                <div class="form-group">
+                <div className="form-group">
                     <JobRetriever />
                 </div>
 

@@ -126,18 +126,18 @@ class FileUploader extends React.Component {
             <div>
                 <ToastContainer />
 
-                <div class="form-group files">
+                <div className="form-group files">
                     <label className= "upload-title"> UPLOAD YOUR FILE </label>
                     <input type="file" name="file" onChange={this.onChangeHandler} />
                 </div>
 
 
-                <div class="form-group"> 
-                    <button type="button" class="btn upload-button btn-block" disabled={this.props.version_id == null || this.state.selectedFile == null} onClick={this.onClickHandler}> UPLOAD </button>
+                <div className="form-group"> 
+                    <button type="button" className="btn upload-button btn-block" disabled={this.props.version_id == null || this.state.selectedFile == null} onClick={this.onClickHandler}> UPLOAD </button>
                 </div>
 
                 { this.state.loaded > 0 &&
-                <div class="form-group">
+                <div className="form-group">
                     <Progress max="100" color="success" value={this.state.loaded} >{Math.round(this.state.loaded, 2)}%</Progress>
                 </div>
                 }

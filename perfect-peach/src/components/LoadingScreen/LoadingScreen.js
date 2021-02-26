@@ -131,7 +131,7 @@ class LoadingScreen extends (React.Component) {
                     <div className="progress-info">
                       <div className="progress-done">
 
-                        <button type="button" class="btn upload-button btn-block" disabled={this.state.result_url === null} onClick={this.sendResultRequest}> RESULTS </button>
+                        <button type="button" className="btn upload-button btn-block" disabled={this.state.result_url === null} onClick={this.sendResultRequest}> RESULTS </button>
 
 
                       </div>

@@ -41,7 +41,7 @@ class JobRetriever extends React.Component {
                     <label className= "upload-title"> PREVIOUS SCORES </label>
 
                     {jobs.map(( (job_id,index) => {
-                        return <button key={job_id + index} type="button" class="btn upload-button btn-block" onClick={() => this.onClickHandler(job_id)}> Show Job {job_id} Status </button>
+                        return <button key={job_id + index} type="button" className="btn upload-button btn-block" onClick={() => this.onClickHandler(job_id)}> Show Job {job_id} Status </button>
                     }))}
                 </div>)
         } else {
