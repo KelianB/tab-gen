@@ -487,6 +487,20 @@ class PlayerControlsGroup extends React.Component {
     this.props.api?.print();
   }
 
+  download(e) {
+    e.preventDefault();
+    console.log(window.alphaTab.exporter.Gp7Exporter)
+    const exporter = new window.alphaTab.exporter.Gp7Exporter();
+    const score = this.props.api.score;
+    const data = exporter.export(score, this.props.api.settings);
+    const a = document.createElement('a');
+    a.download = score.title.length > 0 ? score.title.trim() + '.gp' : 'Untitle.gp';
+    a.href = URL.createObjectURL(new Blob([data], {type:'applicaiton/gp'}));
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
   toggleLoop(e) {
     e.preventDefault();
     if (this.props.api) {
@@ -623,6 +637,22 @@ class PlayerControlsGroup extends React.Component {
             >
               <i className="fas fa-print"></i>
             </a>
+
+            <a
+              href="#"
+              onClick = {this.download.bind(this)}
+              className = {
+                "at-download" + 
+                (this.props.api?.isReadyForPlayback? "" : " disabled")
+              }
+              data-toggle="tooltip"
+              data-placement="top"
+              title = "Export to Guitar Pro 7"
+            >
+              <i className="fas fa-download"/>
+
+            </a>
+
             <ZoomLevelSelector api={this.props.api} />
             <LayoutSelector api={this.props.api} />
 
