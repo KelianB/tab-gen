@@ -1,5 +1,3 @@
-import { VERSION } from "lodash"
-
 /**
  * Actions definition
  */

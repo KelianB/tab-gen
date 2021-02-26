@@ -24,7 +24,7 @@ class JobRetriever extends React.Component {
     }
 
     onClickHandler = (job_id) => {
-        if (this.state.jobs.length != 0) {
+        if (this.state.jobs.length !== 0) {
             this.props.uploadIsOverAction(job_id)
         }
     }
@@ -32,7 +32,7 @@ class JobRetriever extends React.Component {
     render() {
         const jobs = this.state.jobs
         
-        if (jobs.length != 0) {
+        if (jobs.length !== 0) {
 
             return (
                 

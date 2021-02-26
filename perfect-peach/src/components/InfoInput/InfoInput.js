@@ -38,7 +38,7 @@ class InfoInput extends React.Component {
 
     findDescriptionOfSelectedModel = () => {
         const { models, selectedModel } = this.state
-        if (models.length != 0 && selectedModel != null) {
+        if (models.length !== 0 && selectedModel != null) {
 
             const desc = models.filter(model => model.id === selectedModel)[0].description
             this.setState({selectedModelDescription: desc.toUpperCase()})
@@ -87,7 +87,7 @@ class InfoInput extends React.Component {
 
             <div className="container">
                 {
-                    models.length != 0 &&
+                    models.length !== 0 &&
                 
                 <div className="form-group">
                     <label className= "upload-title"> SELECT THE MODEL </label>
@@ -133,12 +133,12 @@ class InfoInput extends React.Component {
                 </div>
 
                 {
-                    selectedInputMethod == 0 &&
+                    selectedInputMethod === 0 &&
                     <FileUploader />
                 }   
 
                 {
-                    selectedInputMethod == 1 &&
+                    selectedInputMethod === 1 &&
                     <div className="form-group">
                         <label className= "upload-title"> RECORD WITH YOUR MICROPHONE  </label>
                         <AudioRecorder />

@@ -2,10 +2,9 @@ import React from 'react';
 import axios from 'axios';
 import { processingIsOverAction } from '../ReduxStuff/Actions'
 import { connect } from 'react-redux';
-import { toast } from 'react-toastify';
 import socketIOClient from 'socket.io-client'
 import {debounce} from 'lodash'
-import { LinearProgress, CircularProgress } from '@material-ui/core';
+import { LinearProgress } from '@material-ui/core';
 import './LoadingScreen.css'
 //const sleep = require('util').promisify(setTimeout)
 
@@ -76,7 +75,7 @@ class LoadingScreen extends (React.Component) {
 
             debounceEmission()
 
-            if (data.progress.done == false) {
+            if (data.progress.done === false) {
               
                 console.log("LOADING - Processing is still going")
                 this.setState({progress:data.progress.total_progress,steps:data.steps, current_step:data.progress.step, step_progress:data.progress.step_progress})
