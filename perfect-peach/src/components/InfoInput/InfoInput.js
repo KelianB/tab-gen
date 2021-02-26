@@ -96,7 +96,7 @@ class InfoInput extends React.Component {
 
                             { 
                                 models.map((model) => 
-                                        <ToggleButton value = {model.id} >
+                                        <ToggleButton value = {model.id} key={model.name + model.id} >
                                             {model.name}
                                         </ToggleButton>
 
@@ -122,7 +122,7 @@ class InfoInput extends React.Component {
 
                             { 
                                 inputMethods.map((method) => 
-                                        <ToggleButton value = {method.id} >
+                                        <ToggleButton value = {method.id} key={method.name + method.id} >
                                             {method.name}
                                         </ToggleButton>
                                     )
