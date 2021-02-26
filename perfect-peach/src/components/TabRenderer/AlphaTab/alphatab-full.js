@@ -26,9 +26,6 @@ function merge() {
 }
 
 class TrackItem extends React.Component {
-  constructor(props) {
-    super(props);
-  }
 
   toggleMute(e) {
     e.preventDefault();
@@ -137,6 +134,9 @@ class PlaybackSpeedSlider extends React.Component {
   }
 
   render() {
+
+    const speeds = ['0.25x', '0.5x', '0.75x','0.9x','1x','1,1x', '1.25x', '1.50x', '2x']
+
     return (
       <div className="btn-group dropup">
         <button
@@ -151,69 +151,13 @@ class PlaybackSpeedSlider extends React.Component {
           </span>
         </button>
         <div className="dropdown-menu at-speed-options">
-          <a
-            className="dropdown-item"
-            href="#"
-            onClick={this.setSpeed.bind(this)}
-          >
-            0.25x
-          </a>
-          <a
-            className="dropdown-item"
-            href="#"
-            onClick={this.setSpeed.bind(this)}
-          >
-            0.5x
-          </a>
-          <a
-            className="dropdown-item"
-            href="#"
-            onClick={this.setSpeed.bind(this)}
-          >
-            0.75x
-          </a>
-          <a
-            className="dropdown-item"
-            href="#"
-            onClick={this.setSpeed.bind(this)}
-          >
-            0.9x
-          </a>
-          <a
-            className="dropdown-item"
-            href="#"
-            onClick={this.setSpeed.bind(this)}
-          >
-            1x
-          </a>
-          <a
-            className="dropdown-item"
-            href="#"
-            onClick={this.setSpeed.bind(this)}
-          >
-            1.1x
-          </a>
-          <a
-            className="dropdown-item"
-            href="#"
-            onClick={this.setSpeed.bind(this)}
-          >
-            1.25x
-          </a>
-          <a
-            className="dropdown-item"
-            href="#"
-            onClick={this.setSpeed.bind(this)}
-          >
-            1.50x
-          </a>
-          <a
-            className="dropdown-item"
-            href="#"
-            onClick={this.setSpeed.bind(this)}
-          >
-            2x
-          </a>
+
+          {speeds.map(speed => { return(
+                <button key={speed} type="button"  className="dropdown-item"  onClick={this.setSpeed.bind(this)}>
+                  {speed}
+                </button>)
+          })}
+
         </div>
       </div>
     );
@@ -221,9 +165,7 @@ class PlaybackSpeedSlider extends React.Component {
 }
 
 class LayoutSelector extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+
 
   selectLayout(layoutMode, scrollMode, e) {
     e.preventDefault();
