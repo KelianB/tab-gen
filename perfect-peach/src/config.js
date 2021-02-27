@@ -5,7 +5,7 @@ const BACK_URL = 'http://localhost:8000'
 
 const POST_FILE_UPLOAD_ROUTE = '/api/job'
 const GET_VERSIONS_ROUTE  = '/api/versions'
-const GET_RESULTS = (job_id) => `/api/job/${job_id}/result` // Inutile car normalement donné par le back 
+// const GET_RESULTS = (job_id) => `/api/job/${job_id}/result` // Inutile car normalement donné par le back 
 
 const WS_END_POINT = '/api/job'
 const WS_MSG_REQUEST_PROGRESS = 'request-progress'
