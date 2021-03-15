@@ -67,7 +67,7 @@ class InfoInput extends React.Component {
     // Input method related methods
 
     handleInputMethod = (event, newMethod) => {
-        this.setState({selectedInputMethod: newMethod})
+        this.setState({selectedInputMethod: parseInt(newMethod, 10)})
     }
 
     componentDidMount = () => {
