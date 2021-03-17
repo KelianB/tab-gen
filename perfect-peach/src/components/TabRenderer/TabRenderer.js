@@ -8,12 +8,12 @@ class TabRenderer extends React.Component {
     //<AlphaTabLight tex={true} tracks ={[0]}> {alphatexString} </AlphaTabLight>
      
     render() {
-        const setting = {
-            file: "./static/files/canon.gp",
-            tracks: [0]
-        };
+        // const setting = {
+        //     file: "./static/files/canon.gp",
+        //     tracks: [0]
+        // };
 
-        if (this.props.full == true) {
+        if (this.props.full === true) {
             return (
                 <div>
                     <AlphaTabFull settings= {{tex:true}} > {this.props.score} </AlphaTabFull>

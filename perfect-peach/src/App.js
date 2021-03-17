@@ -13,27 +13,24 @@ import { connect } from 'react-redux'
 
 
 class App extends React.Component {
-  constructor(props){
-    super(props)
-  };
 
   transitionFull = () => {
 
-    if (this.props.upload_done == false) {
+    if (this.props.upload_done === false) {
       return (        
-        <div class="row fileupload">
-          <div class="col"></div>
-          <div class="col-6"> 
+        <div className="row fileupload">
+          <div className="col"></div>
+          <div className="col-6"> 
             <InfoInput />
           </div>
-          <div class="col">  </div>
+          <div className="col">  </div>
         </div>
         )
-    } else if (this.props.upload_done == true && this.props.score_processing == true && this.props.score_processing_over == false && this.props.job_id != null) {
+    } else if (this.props.upload_done === true && this.props.score_processing === true && this.props.score_processing_over === false && this.props.job_id !== null) {
           return (
           <LoadingScreen job_id = {this.props.job_id}/>
           );
-    } else if (this.props.score_processing == false &&  this.props.score_processing_over == true &&  (this.props.score != null)) {
+    } else if (this.props.score_processing === false &&  this.props.score_processing_over === true &&  (this.props.score !== null)) {
 
           return (
           <TabRenderer full = {true} score = {this.props.score}/>
@@ -56,15 +53,15 @@ class App extends React.Component {
     
     return (
         <div>
-            <div class="header"> <img src={PPLogo} class="logo" alt="Perfect Peach Logo" /> </div>
+            <div className="header"> <img src={PPLogo} className="logo" alt="Perfect Peach Logo" /> </div>
 
-            <div class="container main-content">
+            <div className="container main-content">
 
-                <div class="separation" />
+                <div className="separation" />
                 
                   <this.transitionFull />
           
-                <div class="separation" />
+                <div className="separation" />
 
 
             </div>

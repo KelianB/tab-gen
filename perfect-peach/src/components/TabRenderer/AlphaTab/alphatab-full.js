@@ -26,9 +26,6 @@ function merge() {
 }
 
 class TrackItem extends React.Component {
-  constructor(props) {
-    super(props);
-  }
 
   toggleMute(e) {
     e.preventDefault();
@@ -137,6 +134,9 @@ class PlaybackSpeedSlider extends React.Component {
   }
 
   render() {
+
+    const speeds = ['0.25x', '0.5x', '0.75x','0.9x','1x','1,1x', '1.25x', '1.50x', '2x']
+
     return (
       <div className="btn-group dropup">
         <button
@@ -151,69 +151,13 @@ class PlaybackSpeedSlider extends React.Component {
           </span>
         </button>
         <div className="dropdown-menu at-speed-options">
-          <a
-            className="dropdown-item"
-            href="#"
-            onClick={this.setSpeed.bind(this)}
-          >
-            0.25x
-          </a>
-          <a
-            className="dropdown-item"
-            href="#"
-            onClick={this.setSpeed.bind(this)}
-          >
-            0.5x
-          </a>
-          <a
-            className="dropdown-item"
-            href="#"
-            onClick={this.setSpeed.bind(this)}
-          >
-            0.75x
-          </a>
-          <a
-            className="dropdown-item"
-            href="#"
-            onClick={this.setSpeed.bind(this)}
-          >
-            0.9x
-          </a>
-          <a
-            className="dropdown-item"
-            href="#"
-            onClick={this.setSpeed.bind(this)}
-          >
-            1x
-          </a>
-          <a
-            className="dropdown-item"
-            href="#"
-            onClick={this.setSpeed.bind(this)}
-          >
-            1.1x
-          </a>
-          <a
-            className="dropdown-item"
-            href="#"
-            onClick={this.setSpeed.bind(this)}
-          >
-            1.25x
-          </a>
-          <a
-            className="dropdown-item"
-            href="#"
-            onClick={this.setSpeed.bind(this)}
-          >
-            1.50x
-          </a>
-          <a
-            className="dropdown-item"
-            href="#"
-            onClick={this.setSpeed.bind(this)}
-          >
-            2x
-          </a>
+
+          {speeds.map(speed => { return(
+                <button key={speed} type="button"  className="dropdown-item"  onClick={this.setSpeed.bind(this)}>
+                  {speed}
+                </button>)
+          })}
+
         </div>
       </div>
     );
@@ -221,9 +165,7 @@ class PlaybackSpeedSlider extends React.Component {
 }
 
 class LayoutSelector extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+
 
   selectLayout(layoutMode, scrollMode, e) {
     e.preventDefault();
@@ -251,29 +193,29 @@ class LayoutSelector extends React.Component {
           Layout
         </button>
         <div className="dropdown-menu dropdown-menu-right at-layout-options">
-          <a
+          <button
             className="dropdown-item"
-            href="#"
+            type ="button"
             onClick={this.selectLayout.bind(this, 1, 2)}
           >
             <i className="far fa-caret-square-right"></i> Horizontal Layout
             (Off-Screen)
-          </a>
-          <a
+          </button>
+          <button
             className="dropdown-item"
-            href="#"
+            type ="button"
             onClick={this.selectLayout.bind(this, 1, 1)}
           >
             <i className="fas fa-caret-square-right"></i> Horizontal Layout (Bar
             Wise)
-          </a>
-          <a
+          </button>
+          <button
             className="dropdown-item"
-            href="#"
+            type ="button"
             onClick={this.selectLayout.bind(this, 0, 1)}
           >
             <i className="fas fa-caret-square-down"></i> Vertical Layout
-          </a>
+          </button>
         </div>
       </div>
     );
@@ -304,6 +246,9 @@ class ZoomLevelSelector extends React.Component {
   }
 
   render() {
+
+    const zooms = ['25%','50%', '75%', '90%', '100%', '110%', '125%', '150%', '175%', '200%']
+
     return (
       <div className="btn-group dropup">
         <button
@@ -319,69 +264,14 @@ class ZoomLevelSelector extends React.Component {
           </span>
         </button>
         <div className="dropdown-menu dropdown-menu-right at-zoom-options">
-          <a
-            className="dropdown-item"
-            href="#"
-            onClick={this.setZoom.bind(this)}
-          >
-            25%
-          </a>
-          <a
-            className="dropdown-item"
-            href="#"
-            onClick={this.setZoom.bind(this)}
-          >
-            50%
-          </a>
-          <a
-            className="dropdown-item"
-            href="#"
-            onClick={this.setZoom.bind(this)}
-          >
-            75%
-          </a>
-          <a
-            className="dropdown-item"
-            href="#"
-            onClick={this.setZoom.bind(this)}
-          >
-            90%
-          </a>
-          <a
-            className="dropdown-item"
-            href="#"
-            onClick={this.setZoom.bind(this)}
-          >
-            100%
-          </a>
-          <a
-            className="dropdown-item"
-            href="#"
-            onClick={this.setZoom.bind(this)}
-          >
-            110%
-          </a>
-          <a
-            className="dropdown-item"
-            href="#"
-            onClick={this.setZoom.bind(this)}
-          >
-            125%
-          </a>
-          <a
-            className="dropdown-item"
-            href="#"
-            onClick={this.setZoom.bind(this)}
-          >
-            150%
-          </a>
-          <a
-            className="dropdown-item"
-            href="#"
-            onClick={this.setZoom.bind(this)}
-          >
-            200%
-          </a>
+
+          {zooms.map(zoom => {return (
+                <button key={zoom} className="dropdown-item" type = "button" onClick={this.setZoom.bind(this)} >
+                      {zoom}
+                </button>
+          )})}
+
+
         </div>
       </div>
     );
@@ -389,9 +279,7 @@ class ZoomLevelSelector extends React.Component {
 }
 
 class ScoreDetails extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+
   render() {
     return (
       <div className="at-song-details">
@@ -403,9 +291,6 @@ class ScoreDetails extends React.Component {
 }
 
 class PlayerProgressIndicator extends React.Component {
-  constructor(props) {
-    super(props);
-  }
 
   getLeftRotateTransform() {
     if (this.props.percentage < 0.5) {
@@ -657,7 +542,7 @@ class PlayerControlsGroup extends React.Component {
             <LayoutSelector api={this.props.api} />
 
             <div className="at-logo">
-              powered by <img src="/static/files/img/alphatab.png" />
+              powered by <img src="/static/files/img/alphatab.png" alt="AlphaTab Logo"/>
             </div>
           </div>
         </div>
@@ -688,14 +573,22 @@ export default class AlphaTabFull extends React.Component {
     this._currentTempo = 0;
   }
   componentDidMount() {
-    this.state.settings.player.scrollElement = this.refs.viewPort;
-    this.setupEvents();
+    let settings = this.state.settings;
+    settings.player.scrollElement = this.refs.viewPort;
+    this.setState({settings:settings}, () => {
 
-    console.log(this.state.settings);
+      this.setupEvents();
 
-    this.setState({
-      api: new window.alphaTab.AlphaTabApi(this.refs.alphaTab, this.state.settings),
-    });
+      console.log(this.state.settings);
+  
+      this.setState({
+        api: new window.alphaTab.AlphaTabApi(this.refs.alphaTab, this.state.settings),
+      });
+
+    })
+
+
+
   }
 
   componentWillUnmount() {
@@ -736,7 +629,7 @@ export default class AlphaTabFull extends React.Component {
     at.addEventListener("alphaTab.playerStateChanged", (e) => {
       const args = e.detail;
       playerControls.setState({
-        isPlaying: args.state == 1,
+        isPlaying: args.state === 1,
       });
     });
 
@@ -774,7 +667,7 @@ export default class AlphaTabFull extends React.Component {
 
       // reduce number of UI updates to second changes.
       const currentSeconds = (args.currentTime / 1000) | 0;
-      if (currentSeconds == previousTime || currentSeconds === 0) {
+      if (currentSeconds === previousTime || currentSeconds === 0) {
         return;
       }
       previousTime = currentSeconds;

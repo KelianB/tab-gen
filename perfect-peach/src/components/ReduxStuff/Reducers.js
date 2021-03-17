@@ -1,4 +1,3 @@
-import { add } from 'lodash';
 import {combineReducers} from 'redux';
 import {UPLOAD_IS_OVER,PROCESSING_IS_OVER, VERSION_SELECTED} from './Actions'
 

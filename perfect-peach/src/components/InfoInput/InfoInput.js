@@ -38,7 +38,7 @@ class InfoInput extends React.Component {
 
     findDescriptionOfSelectedModel = () => {
         const { models, selectedModel } = this.state
-        if (models.length != 0 && selectedModel != null) {
+        if (models.length !== 0 && selectedModel != null) {
 
             const desc = models.filter(model => model.id === selectedModel)[0].description
             this.setState({selectedModelDescription: desc.toUpperCase()})
@@ -67,7 +67,7 @@ class InfoInput extends React.Component {
     // Input method related methods
 
     handleInputMethod = (event, newMethod) => {
-        this.setState({selectedInputMethod: newMethod})
+        this.setState({selectedInputMethod: parseInt(newMethod, 10)})
     }
 
     componentDidMount = () => {
@@ -85,18 +85,18 @@ class InfoInput extends React.Component {
         return (
 
 
-            <div class="container">
+            <div className="container">
                 {
-                    models.length != 0 &&
+                    models.length !== 0 &&
                 
-                <div class="form-group">
+                <div className="form-group">
                     <label className= "upload-title"> SELECT THE MODEL </label>
                     <div>
                         <ToggleButtonGroup value = {this.state.selectedModel} exclusive onChange = {this.handleVersion} id="o" aria-label = "mdr"  >
 
                             { 
                                 models.map((model) => 
-                                        <ToggleButton value = {model.id} >
+                                        <ToggleButton value = {model.id} key={model.name + model.id} >
                                             {model.name}
                                         </ToggleButton>
 
@@ -115,14 +115,14 @@ class InfoInput extends React.Component {
                 </div>
                 }
 
-                <div class="form-group">
+                <div className="form-group">
                     <label className= "upload-title"> SELECT YOUR INPUT METHOD </label>
                     <div>
                         <ToggleButtonGroup value = {this.state.selectedInputMethod} exclusive onChange = {this.handleInputMethod} id="m" aria-label = "lol"  >
 
                             { 
                                 inputMethods.map((method) => 
-                                        <ToggleButton value = {method.id} >
+                                        <ToggleButton value = {method.id} key={method.name + method.id} >
                                             {method.name}
                                         </ToggleButton>
                                     )
@@ -133,19 +133,19 @@ class InfoInput extends React.Component {
                 </div>
 
                 {
-                    selectedInputMethod == 0 &&
+                    selectedInputMethod === 0 &&
                     <FileUploader />
                 }   
 
                 {
-                    selectedInputMethod == 1 &&
-                    <div class="form-group">
+                    selectedInputMethod === 1 &&
+                    <div className="form-group">
                         <label className= "upload-title"> RECORD WITH YOUR MICROPHONE  </label>
                         <AudioRecorder />
                     </div>
                 }
 
-                <div class="form-group">
+                <div className="form-group">
                     <JobRetriever />
                 </div>
 

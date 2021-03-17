@@ -24,7 +24,7 @@ class JobRetriever extends React.Component {
     }
 
     onClickHandler = (job_id) => {
-        if (this.state.jobs.length != 0) {
+        if (this.state.jobs.length !== 0) {
             this.props.uploadIsOverAction(job_id)
         }
     }
@@ -32,7 +32,7 @@ class JobRetriever extends React.Component {
     render() {
         const jobs = this.state.jobs
         
-        if (jobs.length != 0) {
+        if (jobs.length !== 0) {
 
             return (
                 
@@ -40,8 +40,8 @@ class JobRetriever extends React.Component {
                     <div className = "separation"/>
                     <label className= "upload-title"> PREVIOUS SCORES </label>
 
-                    {jobs.map((job_id => {
-                        return <button type="button" class="btn upload-button btn-block" onClick={() => this.onClickHandler(job_id)}> Show Job {job_id} Status </button>
+                    {jobs.map(( (job_id,index) => {
+                        return <button key={job_id + index} type="button" className="btn upload-button btn-block" onClick={() => this.onClickHandler(job_id)}> Show Job {job_id} Status </button>
                     }))}
                 </div>)
         } else {
