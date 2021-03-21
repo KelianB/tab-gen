@@ -1,0 +1,4 @@
+venv/*
+static/database.db
+static/uploads/*
+static/process/*
