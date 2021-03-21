@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { uploadIsOverAction } from '../../ReduxStuff/Actions'
 
 import {BACK_URL, POST_FILE_UPLOAD_ROUTE} from '../../../config.js'
-const URL = BACK_URL + POST_FILE_UPLOAD_ROUTE;
+const URL = "http://" + BACK_URL + POST_FILE_UPLOAD_ROUTE;
 
 class AudioRecorder extends React.Component {
     constructor(props) {
@@ -101,7 +101,7 @@ class AudioRecorder extends React.Component {
             });
             console.log(res.data)
 
-            const job_id = res.data.job_ws
+            const job_id = res.data.job_id
 
             this.props.uploadIsOverAction(job_id);
 

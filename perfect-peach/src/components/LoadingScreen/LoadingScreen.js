@@ -2,14 +2,13 @@ import React from 'react';
 import axios from 'axios';
 import { processingIsOverAction } from '../ReduxStuff/Actions'
 import { connect } from 'react-redux';
-import socketIOClient from 'socket.io-client'
 import {debounce} from 'lodash'
 import { LinearProgress } from '@material-ui/core';
 import './LoadingScreen.css'
 //const sleep = require('util').promisify(setTimeout)
 
 
-import {BACK_URL,WS_END_POINT, DEBOUNCE_TIMEOUT} from '../../config.js'
+import {BACK_URL, WS_END_POINT, WS_MSG_REQUEST_PROGRESS, WS_MSG_CURRENT_PROGRESS, DEBOUNCE_TIMEOUT} from '../../config.js'
 
 
 /**
@@ -50,7 +49,7 @@ class LoadingScreen extends (React.Component) {
     sendResultRequest = async () => {
 
         console.log("LOADING - Sending request to get the result")
-        const res = await axios.get(this.state.result_url)
+        const res = await axios.get("http://" + BACK_URL + this.state.result_url)
 
 
         if (await res.data) {
@@ -64,16 +63,23 @@ class LoadingScreen extends (React.Component) {
 
     componentDidMount = () => {
 
-        const socket = socketIOClient(BACK_URL + WS_END_POINT, {transports: ['websocket']});
+        const socket = new WebSocket("ws://" + BACK_URL + WS_END_POINT);
 
-        const requestProgress = () => socket.emit('request-progress', {job_id: this.props.job_id})
+        const requestProgress = () => socket.send(JSON.stringify({
+            type: WS_MSG_REQUEST_PROGRESS, 
+            job_id: this.props.job_id
+        }))
         const debounceEmission = debounce(requestProgress, DEBOUNCE_TIMEOUT )
+        debounceEmission();
+        socket.onmessage = (e) => {
+            const message = JSON.parse(e.data);
+            console.log(message.type, " ", WS_MSG_CURRENT_PROGRESS);
+            if (message.type !== WS_MSG_CURRENT_PROGRESS) return;
+            const data = message.data;
+            console.log("LOADING CURRENT STATUS RECEIVED : ");
+            console.log(data);
 
-        socket.on('current-status', (data) => {
-            console.log("LOADING CURRENT STATUS RECEIVED : ")
-            console.log(data)
-
-            debounceEmission()
+            debounceEmission();
 
             if (data.progress.done === false) {
               
@@ -85,9 +91,9 @@ class LoadingScreen extends (React.Component) {
             } else {
                 console.log("LOADING - Processing is over, the result has been received")
                 this.setState({progress:data.progress.total_progress,steps:data.steps, current_step:data.progress.step, step_progress:data.progress.step_progress, tab_processing:false, is_over:true, result_url: data.result_url}, 
-                  () => socket.disconnect())
+                  () => socket.close())
             }
-        });
+        };
 
 
 

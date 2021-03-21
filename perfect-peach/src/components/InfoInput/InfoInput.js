@@ -33,7 +33,7 @@ class InfoInput extends React.Component {
     // Version related methods
 
     versionURL = () => {
-        return BACK_URL + GET_VERSIONS_ROUTE
+        return "http://" + BACK_URL + GET_VERSIONS_ROUTE
     }
 
     findDescriptionOfSelectedModel = () => {

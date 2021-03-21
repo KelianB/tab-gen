@@ -27,7 +27,7 @@ class FileUploader extends React.Component {
     // Upload related methods
 
     uploadURL = () => {
-        return BACK_URL + POST_FILE_UPLOAD_ROUTE
+        return "http://" + BACK_URL + POST_FILE_UPLOAD_ROUTE
     }
 
     onChangeHandler = event => {
@@ -102,7 +102,7 @@ class FileUploader extends React.Component {
 
             console.log(res.data)
 
-            const job_id = res.data.job_ws
+            const job_id = res.data.job_id
 
             
             this.props.uploadIsOverAction(job_id);
