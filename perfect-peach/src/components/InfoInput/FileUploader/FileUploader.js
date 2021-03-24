@@ -3,32 +3,40 @@ import axios from 'axios';
 import { Progress } from 'reactstrap';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import 'bootstrap/dist/css/bootstrap.css';
+//import 'bootstrap/dist/css/bootstrap.css';
 
 import { connect } from 'react-redux';
-import { processingIsOverAction } from '../ReduxStuff/Actions'
+import { uploadIsOverAction } from '../../ReduxStuff/Actions'
 
-const URL = "http://localhost:8000/upload";
-const MAX_SIZE = 4 * (10 ** 6); // Max size in bytes (?)
+import {BACK_URL, UPLOAD_MAX_SIZE, POST_FILE_UPLOAD_ROUTE} from '../../../config.js'
+
+
+
+
+
 
 class FileUploader extends React.Component {
+    // Expected props version_id given through the Store
     constructor(props) {
         super(props);
         this.state = {
             selectedFile: null,
-            buttonDisabled: true,
+            loaded: null,
         }
     }
-    
-    
+    // Upload related methods
+
+    uploadURL = () => {
+        return "http://" + BACK_URL + POST_FILE_UPLOAD_ROUTE
+    }
 
     onChangeHandler = event => {
         console.log(event.target.files[0]);
         if (this.checkMimeType(event) && this.checkFileSize(event)) {
+
             this.setState({
                 selectedFile: event.target.files[0],
                 loaded: 0,
-                buttonDisabled: false,
             })
         }
 
@@ -55,7 +63,7 @@ class FileUploader extends React.Component {
 
     checkFileSize = event => {
         let file = event.target.files[0]
-        let size = MAX_SIZE;
+        let size = UPLOAD_MAX_SIZE;
         let err = "";
 
         if (file.size > size) {
@@ -75,12 +83,14 @@ class FileUploader extends React.Component {
 
     onClickHandler = () => {
         const data = new FormData();
-
+        const params = {"version_id":this.props.version_id}
 
         data.append('file', this.state.selectedFile)
+
+
         console.log(this.state.selectedFile);
 
-        axios.post(URL, data, {
+        axios.post(this.uploadURL(), data, {params:params}, {
 
             onUploadProgress: ProgressEvent => {
                 this.setState({ loaded: (ProgressEvent.loaded / ProgressEvent.total * 100), })
@@ -92,9 +102,11 @@ class FileUploader extends React.Component {
 
             console.log(res.data)
 
-            const score = res.data;
+            const job_id = res.data.job_id
+
             
-            this.props.processingIsOverAction(score);
+            this.props.uploadIsOverAction(job_id);
+
 
         }).catch(err => {
             toast.error('upload fail')
@@ -108,23 +120,29 @@ class FileUploader extends React.Component {
 
     render() {
 
+
         return (
-            <div class="container">
 
+            <div>
+                <ToastContainer />
 
-                <div class="form-group files">
+                <div className="form-group files">
                     <label className= "upload-title"> UPLOAD YOUR FILE </label>
                     <input type="file" name="file" onChange={this.onChangeHandler} />
                 </div>
 
-                <div class="form-group">
-                    <ToastContainer />
-                    <Progress max="100" color="success" value={this.state.loaded} >{Math.round(this.state.loaded, 2)}%</Progress>
+
+                <div className="form-group"> 
+                    <button type="button" className="btn upload-button btn-block" disabled={this.props.version_id == null || this.state.selectedFile == null} onClick={this.onClickHandler}> UPLOAD </button>
                 </div>
 
-                <button type="button" class="btn upload-button btn-block" disabled={this.state.buttonDisabled} onClick={this.onClickHandler}> UPLOAD </button>
+                { this.state.loaded > 0 &&
+                <div className="form-group">
+                    <Progress max="100" color="success" value={this.state.loaded} >{Math.round(this.state.loaded, 2)}%</Progress>
+                </div>
+                }
 
-            </div>
+                </div>
         )
     }
 }
@@ -132,6 +150,11 @@ class FileUploader extends React.Component {
 /*
  * This line connects FileUploader react component with the Store so
  * that FileUploader can dispatch action by using for instance
- * 'this.props.processingIsOverAction'
+ * 'this.props.uploadIsOverAction'
  */
-export default connect(null, {processingIsOverAction})(FileUploader)
+
+const mapStateToProps =  store =>({
+    version_id: store.peachReducer.version_id
+  })
+
+export default connect(mapStateToProps, {uploadIsOverAction})(FileUploader)

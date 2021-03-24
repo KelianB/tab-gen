@@ -11,7 +11,7 @@ export default class AlphaTabLight extends React.Component {
     componentDidMount() {
         const container = this.refs.alphaTab;
         console.log(this.props.settings);
-        this.state.api = new window.alphaTab.AlphaTabApi(container, this.props.settings);  
+        this.setState({api:new window.alphaTab.AlphaTabApi(container, this.props.settings)});  
     }        
 
     componentWillUnmount() {

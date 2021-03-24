@@ -1,0 +1,30 @@
+.progress-title {
+  color: white;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  font-size: x-large;
+}
+
+.progress-container {
+  size: auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.progress-bars {
+  order: 1;
+  flex-grow: 1;
+}
+
+.progress-info {
+  order: 2;
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.progress-done {
+  flex: 0 0 120px;
+}
