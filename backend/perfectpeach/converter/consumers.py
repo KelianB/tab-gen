@@ -11,6 +11,10 @@ class TaskConsumer(WebsocketConsumer):
         self.accept()
 
     def disconnect(self, close_code):
+        """
+        Called when a client disconnects from the websocket.
+        When that happens, we need to remove all the channels to which the client subscribed to avoid sending information to a closed connection (this uses unnecessary resources).
+        """
         global known_channels
         rooms = known_channels.get(self.channel_name, None)
         if rooms:
@@ -19,6 +23,10 @@ class TaskConsumer(WebsocketConsumer):
         del known_channels[self.channel_name]
 
     def receive(self, text_data):
+        """
+        Called when a client sends a message to the server.
+        The only message in the specification that the client can send is "request_progress" : this subscribes the client to a channel specific to the requested job, which allows it to receive any future updates regarding this job.
+        """
         global known_channels
         text_data_json = json.loads(text_data)
         _type = text_data_json.get('type', None)
@@ -27,6 +35,7 @@ class TaskConsumer(WebsocketConsumer):
             task = Task.objects.get(pk=job_id)
             if task:
                 async_to_sync(self.channel_layer.group_add)(str(job_id), self.channel_name)
+                # We need to remember the client subscribed to this channel for closure on disconnect
                 if known_channels.get(self.channel_name):
                     known_channels[self.channel_name].append(job_id)
                 else:
@@ -36,10 +45,11 @@ class TaskConsumer(WebsocketConsumer):
                     'data': task.status
                 }))
                 
-    # On envoie le message
     def current_progress(self, event):
+        """
+        Called when the server wishes to send a message to all clients subscribed to a job regarding this job's status.
+        """
         data = event['message']
-        # Send message to WebSocket
         self.send(text_data=json.dumps({
             'type': 'current_progress',
             'data': data

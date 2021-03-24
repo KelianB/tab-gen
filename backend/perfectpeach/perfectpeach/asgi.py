@@ -17,6 +17,7 @@ import converter.urls
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'perfectpeach.settings')
 
+# We route HTTP and WS requests differently : HTTP goes to Django, WS goes to Django-Channels.
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),
     "websocket": AuthMiddlewareStack(

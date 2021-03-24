@@ -5,6 +5,10 @@ from functools import reduce, partial
 from operator import getitem
 from datetime import datetime
 
+"""
+This file must be present here to allow proper extraction of the model, as the server is ran in this folder.
+"""
+
 def read_json(fname):
     fname = Path(fname)
     with fname.open('rt') as handle:
