@@ -14,7 +14,7 @@ Modèle pré-entraîné, instructions pour utiliser ce modèle et script permett
 
 ## [/guitarset-processor](./guitarset-processor)
 
-Scripts nécessaires au pre-processing du dataset avant entraînement.
+Scripts nécessaires au pre-processing du dataset avant entraînement. Les données brutes du dataset sont à placer dans guitarset-processor/raw/audio (fichiers .wav) et guitarset-processor/raw/annotations (fichiers .jams)
 
 ## [/backend](./backend)
 
